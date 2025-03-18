@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -25,7 +27,7 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.MapType
+import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerInfoWindow
 import com.google.maps.android.compose.rememberCameraPositionState
@@ -33,8 +35,12 @@ import com.google.maps.android.compose.rememberMarkerState
 import com.ortin.flightradar.R
 
 @Composable
-fun MapScreen(padding: PaddingValues) {
+fun MapScreen(isMyLocationEnabled: Boolean, padding: PaddingValues) {
     val context = LocalContext.current
+    val isLocationEnabledState = rememberUpdatedState(isMyLocationEnabled)
+    val myLocationState = rememberMarkerState(position = LatLng(55.751244, 37.618423))
+    val isUiVisible = remember { mutableStateOf(true) }
+
     val markerPlaneState = rememberMarkerState(position = LatLng(55.761244, 37.618423))
     val yellowPlaneState = rememberMarkerState(position = LatLng(55.761244, 37.628423))
     val firstPlaneState = rememberMarkerState(position = LatLng(55.761244, 37.638423))
@@ -54,10 +60,14 @@ fun MapScreen(padding: PaddingValues) {
         modifier = Modifier
             .padding(padding)
             .fillMaxSize(),
-        properties = MapProperties(mapType = MapType.NORMAL),
+        properties = MapProperties(minZoomPreference = 5f, isMyLocationEnabled = isLocationEnabledState.value),
         cameraPositionState = rememberCameraPositionState {
-            position = CameraPosition.fromLatLngZoom(markerPlaneState.position, 12f)
+            position = CameraPosition.fromLatLngZoom(myLocationState.position, 15f)
         },
+        uiSettings = MapUiSettings(mapToolbarEnabled = isUiVisible.value),
+        onMapClick = {
+            isUiVisible.value = false
+        }
     ) {
         MarkerInfoWindow(
             state = markerPlaneState,
