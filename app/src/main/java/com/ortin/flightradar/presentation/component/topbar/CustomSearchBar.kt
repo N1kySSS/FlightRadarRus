@@ -1,4 +1,4 @@
-package com.ortin.flightradar.presentation.component
+package com.ortin.flightradar.presentation.component.topbar
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
