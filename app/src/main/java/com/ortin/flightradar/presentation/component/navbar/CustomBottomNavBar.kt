@@ -4,8 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -27,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun CustomBottomNavBar(modifier: Modifier) {
+fun CustomBottomNavBar() {
     val interactionSource = remember { MutableInteractionSource() }
     val screens: List<NavigationBarItem> = listOf(
         NavigationBarItem.Settings,
@@ -37,45 +39,53 @@ fun CustomBottomNavBar(modifier: Modifier) {
         NavigationBarItem.Other,
     )
 
-    Row(
-        modifier = modifier
-            .height(54.dp)
-            .padding(horizontal = 16.dp)
-            .fillMaxWidth()
-            .background(
-                color = Color.Black.copy(alpha = 0.4f),
-                shape = RoundedCornerShape(30.dp)
-            ),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.Transparent),
     ) {
-        screens.forEach { item: NavigationBarItem ->
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .clickable(
-                            interactionSource = interactionSource,
-                            indication = null
-                        ) {
-                            TODO("Add action")
-                        },
-                    painter = painterResource(item.icon),
-                    contentDescription = item.title,
-                    tint = Color.White
-                )
-                Text(
-                    text = item.title,
-                    style = TextStyle(
-                        color = Color.White,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.W300,
-                        fontStyle = FontStyle.Normal,
-                        textAlign = TextAlign.Center,
-                    ),
-                )
+
+        Row(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .height(74.dp)
+                .padding(start = 16.dp, end = 16.dp, bottom = 20.dp)
+                .fillMaxWidth()
+                .background(
+                    color = Color.Black.copy(alpha = 0.4f),
+                    shape = RoundedCornerShape(30.dp)
+                ),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            screens.forEach { item: NavigationBarItem ->
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .clickable(
+                                interactionSource = interactionSource,
+                                indication = null
+                            ) {
+                                TODO("Add action")
+                            },
+                        painter = painterResource(item.icon),
+                        contentDescription = item.title,
+                        tint = Color.White
+                    )
+                    Text(
+                        text = item.title,
+                        style = TextStyle(
+                            color = Color.White,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.W300,
+                            fontStyle = FontStyle.Normal,
+                            textAlign = TextAlign.Center,
+                        ),
+                    )
+                }
             }
         }
     }
@@ -84,5 +94,5 @@ fun CustomBottomNavBar(modifier: Modifier) {
 @Preview
 @Composable
 fun CustomBottomNavBarPreview() {
-    CustomBottomNavBar(modifier = Modifier)
+    CustomBottomNavBar()
 }

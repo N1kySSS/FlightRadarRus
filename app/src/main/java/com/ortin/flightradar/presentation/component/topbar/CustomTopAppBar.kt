@@ -35,10 +35,10 @@ fun CustomTopAppBar(
 
     Row(
         modifier = Modifier
-            .height(80.dp)
+            .height(110.dp)
             .fillMaxWidth()
             .background(color = Color.Black.copy(alpha = 0.4f))
-            .padding(horizontal = 16.dp),
+            .padding(start = 16.dp, end = 16.dp, top = 30.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
@@ -46,7 +46,7 @@ fun CustomTopAppBar(
             text = AnnotatedString("AR"),
             style = TextStyle(
                 color = Color.White,
-                fontSize = 26.sp,
+                fontSize = 30.sp,
                 fontWeight = FontWeight.W300,
                 fontStyle = FontStyle.Normal,
                 textAlign = TextAlign.Center,
