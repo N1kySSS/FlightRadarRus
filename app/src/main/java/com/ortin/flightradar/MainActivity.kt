@@ -11,6 +11,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
@@ -38,6 +39,7 @@ class MainActivity : ComponentActivity(), ActivityCompat.OnRequestPermissionsRes
         setContent {
             FlightRadarTheme {
                 var isInterfaceVisible by remember { mutableStateOf(true) }
+                val interactionSource = remember { MutableInteractionSource() }
 
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
@@ -61,7 +63,10 @@ class MainActivity : ComponentActivity(), ActivityCompat.OnRequestPermissionsRes
                     }
                 ) { innerPadding ->
                     MapScreen(
-                        Modifier.clickable { isInterfaceVisible = !isInterfaceVisible },
+                        Modifier.clickable(
+                            interactionSource = interactionSource,
+                            indication = null
+                        ) { isInterfaceVisible = !isInterfaceVisible },
                         isMyLocationEnabled,
                         innerPadding
                     )
