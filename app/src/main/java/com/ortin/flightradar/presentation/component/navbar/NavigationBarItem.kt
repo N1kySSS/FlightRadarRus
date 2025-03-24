@@ -33,9 +33,9 @@ sealed class NavigationBarItem(
         icon = R.drawable.notifications
     )
 
-    data object Other : NavigationBarItem(
+    data object AR : NavigationBarItem(
         route = "",
-        title = "Другое",
-        icon = R.drawable.something
+        title = "Камера",
+        icon = R.drawable.ar
     )
 }
