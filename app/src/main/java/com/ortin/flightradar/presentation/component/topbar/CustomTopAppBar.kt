@@ -26,6 +26,7 @@ import com.ortin.flightradar.R
 fun CustomTopAppBar(
     value: String,
     isSheetVisible: Boolean,
+    isIconEnable: Boolean,
     onIconClick: () -> Unit,
     onValueChanged: (String) -> Unit
 ) {
@@ -48,6 +49,7 @@ fun CustomTopAppBar(
         Icon(
             modifier = Modifier
                 .clickable(
+                    enabled = isIconEnable,
                     interactionSource = interactionSource,
                     indication = null
                 ) {

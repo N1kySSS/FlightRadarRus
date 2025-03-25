@@ -37,8 +37,8 @@ fun CustomTopSheet(
 
     AnimatedVisibility(
         visible = isVisible,
-        exit = slideOutVertically(animationSpec = tween(1600)) { -it },
-        enter = slideInVertically(animationSpec = tween(1600)) { -it }
+        exit = slideOutVertically(animationSpec = tween(800)) { -it },
+        enter = slideInVertically(animationSpec = tween(800)) { -it }
     ) {
         Box(
             modifier = Modifier

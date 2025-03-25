@@ -10,10 +10,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import com.ortin.flightradar.presentation.component.navbar.CustomBottomNavBar
@@ -26,9 +23,18 @@ class MainActivity : ComponentActivity(), ActivityCompat.OnRequestPermissionsRes
 
     companion object {
         val isInterfaceVisible = mutableStateOf(true)
+        val isSheetVisible = mutableStateOf(false)
+        val isFlyoutButtonStackVisible = mutableStateOf(true)
+        val isClickEnable = mutableStateOf(true)
 
         fun onMapClicked() {
-            isInterfaceVisible.value = !isInterfaceVisible.value
+            if (isSheetVisible.value) {
+                isSheetVisible.value = !isSheetVisible.value
+                isFlyoutButtonStackVisible.value = !isFlyoutButtonStackVisible.value
+            } else {
+                isInterfaceVisible.value = !isInterfaceVisible.value
+                isFlyoutButtonStackVisible.value = !isFlyoutButtonStackVisible.value
+            }
         }
     }
 
@@ -38,39 +44,41 @@ class MainActivity : ComponentActivity(), ActivityCompat.OnRequestPermissionsRes
 
         setContent {
             FlightRadarTheme {
-                var isSheetVisible by remember { mutableStateOf(false) }
-
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
                         AnimatedVisibility(
                             visible = isInterfaceVisible.value,
-                            exit = slideOutVertically(animationSpec = tween(200)) { -it },
-                            enter = slideInVertically(animationSpec = tween(340)) { -it }
+                            exit = slideOutVertically(animationSpec = tween(400)) { -it },
+                            enter = slideInVertically(animationSpec = tween(540)) { -it }
                         ) {
                             CustomTopSheet(
-                                isVisible = isSheetVisible,
+                                isVisible = isSheetVisible.value,
                                 content = { /* Content will be added later */ }
                             )
                             CustomTopAppBar(
                                 value = "",
-                                isSheetVisible = isSheetVisible,
-                                onIconClick = { isSheetVisible = !isSheetVisible },
-                                onValueChanged = {}
+                                isSheetVisible = isSheetVisible.value,
+                                onIconClick = {
+                                    isSheetVisible.value = !isSheetVisible.value
+                                    isFlyoutButtonStackVisible.value = !isFlyoutButtonStackVisible.value
+                                },
+                                onValueChanged = {},
+                                isIconEnable = isClickEnable.value
                             )
                         }
                     },
                     bottomBar = {
                         AnimatedVisibility(
                             visible = isInterfaceVisible.value,
-                            exit = slideOutVertically(animationSpec = tween(200)) { it },
-                            enter = slideInVertically(animationSpec = tween(200)) { it }
+                            exit = slideOutVertically(animationSpec = tween(400)) { it },
+                            enter = slideInVertically(animationSpec = tween(400)) { it }
                         ) {
                             CustomBottomNavBar()
                         }
                     }
                 ) { innerPadding ->
-                    MapScreen(Modifier)
+                    MapScreen(isFlyoutButtonStackVisible.value)
                 }
             }
         }
