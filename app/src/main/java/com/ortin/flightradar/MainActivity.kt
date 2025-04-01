@@ -1,5 +1,6 @@
 package com.ortin.flightradar
 
+import android.Manifest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,14 +11,20 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
+import com.ortin.flightradar.domain.location.MyLocationUtil
+import com.ortin.flightradar.domain.location.requestLocationPermission
 import com.ortin.flightradar.presentation.component.navbar.CustomBottomNavBar
 import com.ortin.flightradar.presentation.component.topbar.CustomTopAppBar
 import com.ortin.flightradar.presentation.component.topsheet.CustomTopSheet
 import com.ortin.flightradar.presentation.screen.MapScreen
+import com.ortin.flightradar.presentation.viewmodel.LocationViewModel
 import com.ortin.flightradar.ui.theme.FlightRadarTheme
+import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -38,12 +45,31 @@ class MainActivity : ComponentActivity(), ActivityCompat.OnRequestPermissionsRes
         }
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         setContent {
             FlightRadarTheme {
+                val context = LocalContext.current
+                val myLocationUtil = MyLocationUtil(context)
+                val locationVM: LocationViewModel = koinViewModel()
+                val launcher = requestLocationPermission(
+                    context = context,
+                    viewModel = locationVM,
+                    myLocationUtil = myLocationUtil
+                )
+
+                LaunchedEffect(Unit) {
+                    launcher.launch(
+                        arrayOf(
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                        )
+                    )
+                }
+
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
@@ -61,7 +87,8 @@ class MainActivity : ComponentActivity(), ActivityCompat.OnRequestPermissionsRes
                                 isSheetVisible = isSheetVisible.value,
                                 onIconClick = {
                                     isSheetVisible.value = !isSheetVisible.value
-                                    isFlyoutButtonStackVisible.value = !isFlyoutButtonStackVisible.value
+                                    isFlyoutButtonStackVisible.value =
+                                        !isFlyoutButtonStackVisible.value
                                 },
                                 onValueChanged = {},
                                 isIconEnable = isClickEnable.value

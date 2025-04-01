@@ -11,10 +11,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +29,8 @@ import com.ortin.flightradar.R
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButton
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButtonItem
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButtonStack
+import com.ortin.flightradar.presentation.viewmodel.LocationViewModel
+import org.koin.androidx.compose.koinViewModel
 import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.maps.Style
 import org.ramani.compose.CameraPosition
@@ -39,6 +41,9 @@ import org.ramani.compose.UiSettings
 fun MapScreen(isFlyoutButtonVisible: Boolean) {
     val context = LocalContext.current
     val key = context.getString(R.string.MAPS_API_KEY)
+
+    val locationVM: LocationViewModel = koinViewModel()
+    val userLocation by locationVM.location
 
     val buttons: List<FlyoutButtonItem> = listOf(
         FlyoutButtonItem.FAQ,
@@ -59,11 +64,22 @@ fun MapScreen(isFlyoutButtonVisible: Boolean) {
         isLogoEnabled = false,
         isAttributionEnabled = false
     )
-    val cameraPosition = rememberSaveable {
-        CameraPosition(
-            target = LatLng(55.699402, 37.625485),
-            zoom = 17.0
+    var cameraPosition by remember {
+        mutableStateOf(
+            CameraPosition(
+                target = LatLng(55.699402, 37.625485),
+                zoom = 17.0
+            )
         )
+    }
+
+    LaunchedEffect(userLocation) {
+        userLocation?.let {
+            cameraPosition = CameraPosition(
+                target = LatLng(it.latitude, it.longitude),
+                zoom = 17.0
+            )
+        }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -86,7 +102,13 @@ fun MapScreen(isFlyoutButtonVisible: Boolean) {
         }
         FlyoutButtonStack(
             modifier = Modifier
-                .offset { IntOffset(offsetX.toPx().toInt(), 0) }
+                .offset {
+                    IntOffset(
+                        offsetX
+                            .toPx()
+                            .toInt(), 0
+                    )
+                }
                 .padding(bottom = 50.dp)
                 .align(Alignment.BottomEnd)
                 .padding(32.dp),
