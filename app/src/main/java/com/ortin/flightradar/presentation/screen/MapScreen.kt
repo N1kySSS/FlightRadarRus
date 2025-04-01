@@ -35,6 +35,7 @@ import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.maps.Style
 import org.ramani.compose.CameraPosition
 import org.ramani.compose.MapLibre
+import org.ramani.compose.Symbol
 import org.ramani.compose.UiSettings
 
 @Composable
@@ -77,7 +78,7 @@ fun MapScreen(isFlyoutButtonVisible: Boolean) {
         userLocation?.let {
             cameraPosition = CameraPosition(
                 target = LatLng(it.latitude, it.longitude),
-                zoom = 17.0
+                zoom = 10.0
             )
         }
     }
@@ -92,7 +93,12 @@ fun MapScreen(isFlyoutButtonVisible: Boolean) {
             onMapClick = { if (isClickEnable.value) MainActivity.onMapClicked() },
             styleBuilder = Style.Builder()
                 .fromUri("https://api.maptiler.com/maps/streets-v2/style.json?key=$key"),
-        )
+        ) {
+            Symbol(
+                center = LatLng(55.699402, 37.625485),
+                text = "ЗИТ Офис"
+            )
+        }
         if (isBackgroundDark) {
             Box(
                 modifier = Modifier
