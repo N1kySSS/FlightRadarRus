@@ -27,12 +27,6 @@ sealed class NavigationBarItem(
         icon = R.drawable.filters
     )
 
-    data object Notifications : NavigationBarItem(
-        route ="",
-        title = "Уведомления",
-        icon = R.drawable.notifications
-    )
-
     data object AR : NavigationBarItem(
         route = "",
         title = "Камера",

@@ -66,15 +66,8 @@ fun CustomTopAppBar(
             modifier = Modifier.weight(1f)
         )
         Icon(
-            modifier = Modifier
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = null
-                ) {
-                    TODO("Add action")
-                },
-            painter = painterResource(R.drawable.profile),
-            contentDescription = "Profile",
+            painter = painterResource(R.drawable.app_icon),
+            contentDescription = "ЗИТ",
             tint = Color.White
         )
     }

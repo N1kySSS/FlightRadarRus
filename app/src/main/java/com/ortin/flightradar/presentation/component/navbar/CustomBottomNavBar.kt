@@ -35,7 +35,6 @@ fun CustomBottomNavBar() {
         NavigationBarItem.Settings,
         NavigationBarItem.Weather,
         NavigationBarItem.Filters,
-        NavigationBarItem.Notifications,
         NavigationBarItem.AR,
     )
 

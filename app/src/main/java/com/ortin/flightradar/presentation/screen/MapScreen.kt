@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,8 +29,11 @@ import com.ortin.flightradar.R
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButton
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButtonItem
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButtonStack
+import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.maps.Style
+import org.ramani.compose.CameraPosition
 import org.ramani.compose.MapLibre
+import org.ramani.compose.UiSettings
 
 @Composable
 fun MapScreen(isFlyoutButtonVisible: Boolean) {
@@ -51,14 +55,27 @@ fun MapScreen(isFlyoutButtonVisible: Boolean) {
 
     var isBackgroundDark by remember { mutableStateOf(false) }
 
+    val mapUiSettings = UiSettings(
+        isLogoEnabled = false,
+        isAttributionEnabled = false
+    )
+    val cameraPosition = rememberSaveable {
+        CameraPosition(
+            target = LatLng(55.699402, 37.625485),
+            zoom = 17.0
+        )
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         MapLibre(
             modifier = Modifier
                 .fillMaxSize()
                 .align(Alignment.Center),
+            uiSettings = mapUiSettings,
+            cameraPosition = cameraPosition,
             onMapClick = { if (isClickEnable.value) MainActivity.onMapClicked() },
             styleBuilder = Style.Builder()
-                .fromUri("https://api.maptiler.com/maps/streets-v2/style.json?key=$key")
+                .fromUri("https://api.maptiler.com/maps/streets-v2/style.json?key=$key"),
         )
         if (isBackgroundDark) {
             Box(
