@@ -35,7 +35,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ortin.flightradar.MainActivity.Companion.isClickEnable
 import com.ortin.flightradar.R
+import com.ortin.flightradar.ui.theme.Background
 import com.ortin.flightradar.ui.theme.Primary
+import com.ortin.flightradar.ui.theme.Selected
 
 fun interface FlyoutScope {
 
@@ -69,7 +71,7 @@ fun BoxScope.FlyoutButtonStack(
             modifier = Modifier
                 .size(40.dp)
                 .background(
-                    color = Color.Black.copy(alpha = 0.4f),
+                    color = Background,
                     shape = CircleShape
                 )
                 .clickable(
@@ -83,7 +85,7 @@ fun BoxScope.FlyoutButtonStack(
                 },
             painter = painterResource(R.drawable.more),
             contentDescription = "Profile",
-            tint = if (isVisible) Primary else Color.White
+            tint = if (isVisible) Selected else Primary
         )
     }
 }
@@ -107,7 +109,7 @@ fun FlyoutScope.FlyoutButton(
                 ) { /* TODO(Add action) */ },
             text = title,
             style = TextStyle(
-                color = Color.White,
+                color = Primary,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.W300,
                 fontStyle = FontStyle.Normal,
@@ -115,21 +117,27 @@ fun FlyoutScope.FlyoutButton(
             ),
         )
         Spacer(Modifier.width(4.dp))
-        Icon(
+        Box(
             modifier = Modifier
                 .size(40.dp)
                 .background(
-                    color = Color.Black.copy(alpha = 0.4f),
+                    color = Background,
                     shape = CircleShape
                 )
                 .clickable(
                     interactionSource = interactionSource,
                     indication = null
-                ) { /* TODO(Add action) */ },
-            painter = painterResource(icon),
-            contentDescription = title,
-            tint = Color.White
-        )
+                ) { /* TODO(Add action) */ }
+        ) {
+            Icon(
+                modifier = Modifier
+                    .size(28.dp)
+                    .align(Alignment.Center),
+                painter = painterResource(icon),
+                contentDescription = title,
+                tint = Primary
+            )
+        }
     }
 }
 

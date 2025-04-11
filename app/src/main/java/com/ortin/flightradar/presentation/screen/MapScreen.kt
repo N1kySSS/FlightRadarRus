@@ -1,8 +1,12 @@
 package com.ortin.flightradar.presentation.screen
 
+import android.view.Gravity
+import android.widget.Toast
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,14 +15,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
@@ -30,11 +33,13 @@ import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButton
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButtonItem
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButtonStack
 import com.ortin.flightradar.presentation.viewmodel.LocationViewModel
+import com.ortin.flightradar.ui.theme.OnBackground
 import org.koin.androidx.compose.koinViewModel
 import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.maps.Style
 import org.ramani.compose.CameraPosition
 import org.ramani.compose.MapLibre
+import org.ramani.compose.Margins
 import org.ramani.compose.Symbol
 import org.ramani.compose.UiSettings
 
@@ -63,25 +68,20 @@ fun MapScreen(isFlyoutButtonVisible: Boolean) {
 
     val mapUiSettings = UiSettings(
         isLogoEnabled = false,
-        isAttributionEnabled = false
+        isAttributionEnabled = false,
+        compassGravity = Gravity.BOTTOM,
+        compassMargins = Margins(left = 90, bottom = 212)
     )
-    var cameraPosition by remember {
-        mutableStateOf(
-            CameraPosition(
-                target = LatLng(55.699402, 37.625485),
-                zoom = 17.0
-            )
+    val cameraPosition = rememberSaveable {
+        CameraPosition(
+            target = LatLng(55.699402, 37.625485),
+            zoom = 17.0
         )
-    }
+    } // сделать возврат камеры на геолокацию пользователя по кнопке
 
-    LaunchedEffect(userLocation) {
-        userLocation?.let {
-            cameraPosition = CameraPosition(
-                target = LatLng(it.latitude, it.longitude),
-                zoom = 10.0
-            )
-        }
-    }
+    var styleState by remember { mutableStateOf(false) }
+
+    val interactionSource = remember { MutableInteractionSource() }
 
     Box(modifier = Modifier.fillMaxSize()) {
         MapLibre(
@@ -91,19 +91,33 @@ fun MapScreen(isFlyoutButtonVisible: Boolean) {
             uiSettings = mapUiSettings,
             cameraPosition = cameraPosition,
             onMapClick = { if (isClickEnable.value) MainActivity.onMapClicked() },
+            onStyleLoaded = { style ->
+                styleState = style.isFullyLoaded
+            },
             styleBuilder = Style.Builder()
                 .fromUri("https://api.maptiler.com/maps/streets-v2/style.json?key=$key"),
         ) {
-            Symbol(
-                center = LatLng(55.699402, 37.625485),
-                text = "ЗИТ Офис"
-            )
+            if (styleState) {
+                Symbol(
+                    center = LatLng(55.699402, 37.625485),
+                    text = "ЗИТ Офис",
+                    onClick = {
+                        Toast.makeText(context, "Это главный офис ФГУП ЗИТ", Toast.LENGTH_SHORT).show()
+                    }
+                )
+            }
         }
         if (isBackgroundDark) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.6f))
+                    .background(OnBackground)
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = null
+                    ) {
+                        /* do nothing */
+                    }
             )
         }
         FlyoutButtonStack(

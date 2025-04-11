@@ -21,11 +21,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ortin.flightradar.ui.theme.Background
 
 @Composable
 fun CustomTopSheet(
@@ -45,7 +45,7 @@ fun CustomTopSheet(
                 .padding(top = 110.dp)
                 .height(sheetHeight)
                 .background(
-                    Color.Black.copy(alpha = 0.4f),
+                    Background,
                     RoundedCornerShape(
                         bottomStart = 12.dp,
                         bottomEnd = 12.dp

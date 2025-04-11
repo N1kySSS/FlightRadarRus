@@ -17,8 +17,10 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.ortin.flightradar.R
 import com.ortin.flightradar.ui.theme.Primary
+import com.ortin.flightradar.ui.theme.Selected
 
 @Composable
 fun CustomSearchBar(
@@ -26,10 +28,10 @@ fun CustomSearchBar(
     value: String,
     modifier: Modifier = Modifier,
     placeholderColor: Color = Color.Gray,
-    focusedIconsColor: Color = Primary,
-    unfocusedIconsColor: Color = Color.Black,
-    focusedIndicatorColor: Color = Primary,
-    unfocusedIndicatorColor: Color = Color.White,
+    focusedIconsColor: Color = Selected,
+    unfocusedIconsColor: Color = Primary,
+    focusedIndicatorColor: Color = Selected,
+    unfocusedIndicatorColor: Color = Primary,
     focusedContainerColor: Color = Color.White,
     unfocusedContainerColor: Color = Color.White
 ) {
@@ -41,7 +43,7 @@ fun CustomSearchBar(
             .padding(horizontal = 16.dp, vertical = 4.dp),
         value = value,
         onValueChange = onValueChanged,
-        placeholder = { Text(text = "FlightRadarRus") },
+        placeholder = { Text(text = "FlightRadarRus", letterSpacing = 2.sp) },
         singleLine = true,
         shape = RoundedCornerShape(10.dp),
         leadingIcon = {

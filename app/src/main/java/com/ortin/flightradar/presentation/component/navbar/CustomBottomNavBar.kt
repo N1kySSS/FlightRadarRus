@@ -27,6 +27,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ortin.flightradar.ui.theme.Background
+import com.ortin.flightradar.ui.theme.Primary
 
 @Composable
 fun CustomBottomNavBar() {
@@ -51,7 +53,7 @@ fun CustomBottomNavBar() {
                 .padding(start = 16.dp, end = 16.dp, bottom = 20.dp)
                 .fillMaxWidth()
                 .background(
-                    color = Color.Black.copy(alpha = 0.4f),
+                    color = Background,
                     shape = RoundedCornerShape(30.dp)
                 ),
             horizontalArrangement = Arrangement.SpaceEvenly,
@@ -72,12 +74,12 @@ fun CustomBottomNavBar() {
                             },
                         painter = painterResource(item.icon),
                         contentDescription = item.title,
-                        tint = Color.White
+                        tint = Primary
                     )
                     Text(
                         text = item.title,
                         style = TextStyle(
-                            color = Color.White,
+                            color = Primary,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.W300,
                             fontStyle = FontStyle.Normal,

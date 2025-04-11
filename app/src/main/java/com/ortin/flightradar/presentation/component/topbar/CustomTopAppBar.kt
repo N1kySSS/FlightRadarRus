@@ -17,10 +17,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.ortin.flightradar.R
+import com.ortin.flightradar.ui.theme.Background
+import com.ortin.flightradar.ui.theme.Primary
 
 @Composable
 fun CustomTopAppBar(
@@ -41,7 +42,7 @@ fun CustomTopAppBar(
         modifier = Modifier
             .height(110.dp)
             .fillMaxWidth()
-            .background(color = Color.Black.copy(alpha = 0.4f))
+            .background(color = Background)
             .padding(start = 16.dp, end = 16.dp, top = 30.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -58,7 +59,7 @@ fun CustomTopAppBar(
                 .rotate(rotationAngle),
             painter = painterResource(R.drawable.arrow_down),
             contentDescription = "More info",
-            tint = Color.White
+            tint = Primary
         )
         CustomSearchBar(
             onValueChanged = onValueChanged,
@@ -68,7 +69,7 @@ fun CustomTopAppBar(
         Icon(
             painter = painterResource(R.drawable.app_icon),
             contentDescription = "ЗИТ",
-            tint = Color.White
+            tint = Primary
         )
     }
 }
