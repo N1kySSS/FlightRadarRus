@@ -8,10 +8,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.core.app.ActivityCompat
 import com.ortin.flightradar.MainActivity
-import com.ortin.flightradar.presentation.viewmodel.LocationViewModel
+import com.ortin.flightradar.presentation.viewmodel.MapScreenViewModel
 
 @Composable
-fun requestLocationPermission(context: Context, viewModel: LocationViewModel, myLocationUtil: MyLocationUtil) = rememberLauncherForActivityResult(
+fun requestLocationPermission(context: Context, viewModel: MapScreenViewModel, myLocationUtil: MyLocationUtil) = rememberLauncherForActivityResult(
     contract = ActivityResultContracts.RequestMultiplePermissions(),
     onResult = { permissions ->
         if (permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true

@@ -30,7 +30,7 @@ import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButtonIte
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButtonStack
 import com.ortin.flightradar.presentation.component.mylocationbutton.MyLocationButton
 import com.ortin.flightradar.presentation.util.clickableWithoutIndication
-import com.ortin.flightradar.presentation.viewmodel.LocationViewModel
+import com.ortin.flightradar.presentation.viewmodel.MapScreenViewModel
 import com.ortin.flightradar.ui.theme.OnBackground
 import org.koin.androidx.compose.koinViewModel
 import org.maplibre.android.geometry.LatLng
@@ -46,8 +46,8 @@ fun MapScreen(isFlyoutButtonVisible: Boolean) {
     val context = LocalContext.current
     val key = context.getString(R.string.MAPS_API_KEY)
 
-    val locationVM: LocationViewModel = koinViewModel()
-    val userLocation = locationVM.location
+    val viewModel: MapScreenViewModel = koinViewModel()
+    val userLocation = viewModel.location
 
     val buttons: List<FlyoutButtonItem> = listOf(
         FlyoutButtonItem.FAQ,

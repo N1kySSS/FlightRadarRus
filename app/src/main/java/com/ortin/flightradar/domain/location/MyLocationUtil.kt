@@ -9,14 +9,14 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.ortin.flightradar.data.location.LocationData
-import com.ortin.flightradar.presentation.viewmodel.LocationViewModel
+import com.ortin.flightradar.presentation.viewmodel.MapScreenViewModel
 
 class MyLocationUtil(private val context: Context) {
 
     private val _fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
     @SuppressLint("MissingPermission")
-    fun requestLocationUpdates(viewModel: LocationViewModel) {
+    fun requestLocationUpdates(viewModel: MapScreenViewModel) {
         val locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)

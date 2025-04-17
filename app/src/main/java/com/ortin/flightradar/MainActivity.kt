@@ -22,7 +22,7 @@ import com.ortin.flightradar.presentation.component.navbar.CustomBottomNavBar
 import com.ortin.flightradar.presentation.component.topbar.CustomTopAppBar
 import com.ortin.flightradar.presentation.component.topsheet.CustomTopSheet
 import com.ortin.flightradar.presentation.screen.MapScreen
-import com.ortin.flightradar.presentation.viewmodel.LocationViewModel
+import com.ortin.flightradar.presentation.viewmodel.MapScreenViewModel
 import com.ortin.flightradar.ui.theme.FlightRadarTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -54,10 +54,10 @@ class MainActivity : ComponentActivity(), ActivityCompat.OnRequestPermissionsRes
             FlightRadarTheme {
                 val context = LocalContext.current
                 val myLocationUtil = MyLocationUtil(context)
-                val locationVM: LocationViewModel = koinViewModel()
+                val viewModel: MapScreenViewModel = koinViewModel()
                 val launcher = requestLocationPermission(
                     context = context,
-                    viewModel = locationVM,
+                    viewModel = viewModel,
                     myLocationUtil = myLocationUtil
                 )
 
