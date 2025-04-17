@@ -25,22 +25,23 @@ import com.ortin.flightradar.presentation.screen.MapScreen
 import com.ortin.flightradar.presentation.viewmodel.MapScreenViewModel
 import com.ortin.flightradar.ui.theme.FlightRadarTheme
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.KoinContext
 
 class MainActivity : ComponentActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
 
     companion object {
         val isInterfaceVisible = mutableStateOf(true)
         val isSheetVisible = mutableStateOf(false)
-        val isFlyoutButtonStackVisible = mutableStateOf(true)
+        val isSideButtonsVisible = mutableStateOf(true)
         val isClickEnable = mutableStateOf(true)
 
         fun onMapClicked() {
             if (isSheetVisible.value) {
                 isSheetVisible.value = !isSheetVisible.value
-                isFlyoutButtonStackVisible.value = !isFlyoutButtonStackVisible.value
+                isSideButtonsVisible.value = !isSideButtonsVisible.value
             } else {
                 isInterfaceVisible.value = !isInterfaceVisible.value
-                isFlyoutButtonStackVisible.value = !isFlyoutButtonStackVisible.value
+                isSideButtonsVisible.value = !isSideButtonsVisible.value
             }
         }
     }
@@ -51,61 +52,63 @@ class MainActivity : ComponentActivity(), ActivityCompat.OnRequestPermissionsRes
         enableEdgeToEdge()
 
         setContent {
-            FlightRadarTheme {
-                val context = LocalContext.current
-                val myLocationUtil = MyLocationUtil(context)
-                val viewModel: MapScreenViewModel = koinViewModel()
-                val launcher = requestLocationPermission(
-                    context = context,
-                    viewModel = viewModel,
-                    myLocationUtil = myLocationUtil
-                )
-
-                LaunchedEffect(Unit) {
-                    launcher.launch(
-                        arrayOf(
-                            Manifest.permission.ACCESS_COARSE_LOCATION,
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                        )
+            KoinContext {
+                FlightRadarTheme {
+                    val context = LocalContext.current
+                    val myLocationUtil = MyLocationUtil(context)
+                    val viewModel: MapScreenViewModel = koinViewModel()
+                    val launcher = requestLocationPermission(
+                        context = context,
+                        viewModel = viewModel,
+                        myLocationUtil = myLocationUtil
                     )
-                }
 
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    topBar = {
-                        AnimatedVisibility(
-                            visible = isInterfaceVisible.value,
-                            exit = slideOutVertically(animationSpec = tween(400)) { -it },
-                            enter = slideInVertically(animationSpec = tween(540)) { -it }
-                        ) {
-                            CustomTopSheet(
-                                isVisible = isSheetVisible.value,
-                                content = { /* Content will be added later */ }
+                    LaunchedEffect(Unit) {
+                        launcher.launch(
+                            arrayOf(
+                                Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.ACCESS_FINE_LOCATION
                             )
-                            CustomTopAppBar(
-                                value = "",
-                                isSheetVisible = isSheetVisible.value,
-                                onIconClick = {
-                                    isSheetVisible.value = !isSheetVisible.value
-                                    isFlyoutButtonStackVisible.value =
-                                        !isFlyoutButtonStackVisible.value
-                                },
-                                onValueChanged = {},
-                                isIconEnable = isClickEnable.value
-                            )
-                        }
-                    },
-                    bottomBar = {
-                        AnimatedVisibility(
-                            visible = isInterfaceVisible.value,
-                            exit = slideOutVertically(animationSpec = tween(400)) { it },
-                            enter = slideInVertically(animationSpec = tween(400)) { it }
-                        ) {
-                            CustomBottomNavBar()
-                        }
+                        )
                     }
-                ) { innerPadding ->
-                    MapScreen(isFlyoutButtonStackVisible.value)
+
+                    Scaffold(
+                        modifier = Modifier.fillMaxSize(),
+                        topBar = {
+                            AnimatedVisibility(
+                                visible = isInterfaceVisible.value,
+                                exit = slideOutVertically(animationSpec = tween(400)) { -it },
+                                enter = slideInVertically(animationSpec = tween(540)) { -it }
+                            ) {
+                                CustomTopSheet(
+                                    isVisible = isSheetVisible.value,
+                                    content = { /* Content will be added later */ }
+                                )
+                                CustomTopAppBar(
+                                    value = "",
+                                    isSheetVisible = isSheetVisible.value,
+                                    onIconClick = {
+                                        isSheetVisible.value = !isSheetVisible.value
+                                        isSideButtonsVisible.value =
+                                            !isSideButtonsVisible.value
+                                    },
+                                    onValueChanged = {},
+                                    isIconEnable = isClickEnable.value
+                                )
+                            }
+                        },
+                        bottomBar = {
+                            AnimatedVisibility(
+                                visible = isInterfaceVisible.value,
+                                exit = slideOutVertically(animationSpec = tween(400)) { it },
+                                enter = slideInVertically(animationSpec = tween(400)) { it }
+                            ) {
+                                CustomBottomNavBar()
+                            }
+                        }
+                    ) { innerPadding ->
+                        MapScreen(isSideButtonsVisible.value)
+                    }
                 }
             }
         }

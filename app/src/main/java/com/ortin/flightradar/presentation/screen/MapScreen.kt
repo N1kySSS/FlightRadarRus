@@ -42,7 +42,7 @@ import org.ramani.compose.UiSettings
 import org.ramani.compose.rememberMapViewWithLifecycle
 
 @Composable
-fun MapScreen(isFlyoutButtonVisible: Boolean) {
+fun MapScreen(isSideButtonsVisible: Boolean) {
     val context = LocalContext.current
     val key = context.getString(R.string.MAPS_API_KEY)
 
@@ -56,10 +56,15 @@ fun MapScreen(isFlyoutButtonVisible: Boolean) {
     )
 
     val localWidth = LocalConfiguration.current.screenWidthDp
-    val offsetX by animateDpAsState(
-        targetValue = if (isFlyoutButtonVisible) 0.dp else localWidth.dp,
+    val flyoutButtonOffsetX by animateDpAsState(
+        targetValue = if (isSideButtonsVisible) 0.dp else localWidth.dp,
         animationSpec = tween(durationMillis = 400),
         label = "FlyoutButtonStack offset"
+    )
+    val myLocationButtonOffsetX by animateDpAsState(
+        targetValue = if (isSideButtonsVisible) 0.dp else -localWidth.dp,
+        animationSpec = tween(durationMillis = 400),
+        label = "MyLocationButton offset"
     )
 
     var isBackgroundDark by remember { mutableStateOf(false) }
@@ -99,7 +104,6 @@ fun MapScreen(isFlyoutButtonVisible: Boolean) {
             if (styleState) {
                 Symbol(
                     center = LatLng(55.699402, 37.625485),
-                    text = "ЗИТ Офис",
                     onClick = {
                         Toast
                             .makeText(context, "Это главный офис ФГУП ЗИТ", Toast.LENGTH_SHORT)
@@ -107,6 +111,23 @@ fun MapScreen(isFlyoutButtonVisible: Boolean) {
                     }
                 )
             }
+        }
+        userLocation.value?.let {
+            MyLocationButton(
+                modifier = Modifier
+                    .offset {
+                        IntOffset(
+                            myLocationButtonOffsetX
+                                .toPx()
+                                .toInt(), 0
+                        )
+                    }
+                    .padding(bottom = 50.dp)
+                    .align(Alignment.BottomStart)
+                    .padding(32.dp),
+                userLocation = it,
+                cameraPosition = cameraPosition
+            )
         }
         if (isBackgroundDark) {
             Box(
@@ -124,7 +145,7 @@ fun MapScreen(isFlyoutButtonVisible: Boolean) {
             modifier = Modifier
                 .offset {
                     IntOffset(
-                        offsetX
+                        flyoutButtonOffsetX
                             .toPx()
                             .toInt(), 0
                     )
@@ -144,16 +165,6 @@ fun MapScreen(isFlyoutButtonVisible: Boolean) {
                     Spacer(Modifier.height(8.dp))
                 }
             }
-        }
-        userLocation.value?.let {
-            MyLocationButton(
-                modifier = Modifier
-                    .padding(bottom = 50.dp)
-                    .align(Alignment.BottomStart)
-                    .padding(32.dp),
-                userLocation = it,
-                cameraPosition = cameraPosition
-            )
         }
     }
 }

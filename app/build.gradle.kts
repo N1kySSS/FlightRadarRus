@@ -72,11 +72,6 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.ramani.maps.ramani.maplibre)
-    implementation(libs.play.services.location)
-    implementation(libs.koin.android)
-    implementation(libs.koin.androidx.navigation)
-    implementation(libs.koin.androidx.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -84,4 +79,13 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation(libs.ramani.maps.ramani.maplibre)
+    implementation(libs.play.services.location)
+
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.navigation)
+    implementation(libs.koin.androidx.compose)
+
+    implementation(libs.androidx.navigation.compose)
 }
