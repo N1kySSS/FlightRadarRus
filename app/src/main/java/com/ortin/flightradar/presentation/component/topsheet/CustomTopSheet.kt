@@ -1,9 +1,7 @@
 package com.ortin.flightradar.presentation.component.topsheet
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,24 +33,26 @@ fun CustomTopSheet(
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val sheetHeight = screenHeight * 3 / 4
 
-    AnimatedVisibility(
-        visible = isVisible,
-        exit = slideOutVertically(animationSpec = tween(800)) { -it },
-        enter = slideInVertically(animationSpec = tween(800)) { -it }
-    ) {
-        Box(
-            modifier = Modifier
-                .padding(top = 110.dp)
-                .height(sheetHeight)
-                .background(
-                    Background,
-                    RoundedCornerShape(
-                        bottomStart = 12.dp,
-                        bottomEnd = 12.dp
-                    )
+    val animatedHeight by animateDpAsState(
+        targetValue = if (isVisible) sheetHeight else 0.dp,
+        animationSpec = tween(durationMillis = 800),
+        label = "SheetHeight"
+    )
+
+    Box(
+        modifier = Modifier
+            .padding(top = 110.dp)
+            .height(animatedHeight)
+            .fillMaxWidth()
+            .background(
+                Background,
+                RoundedCornerShape(
+                    bottomStart = 12.dp,
+                    bottomEnd = 12.dp
                 )
-                .fillMaxWidth()
-        ) {
+            )
+    ) {
+        if (animatedHeight > 0.dp) {
             content()
         }
     }
