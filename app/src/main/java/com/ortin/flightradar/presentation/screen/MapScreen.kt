@@ -1,6 +1,5 @@
 package com.ortin.flightradar.presentation.screen
 
-import android.view.Gravity
 import android.widget.Toast
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -32,6 +31,7 @@ import com.ortin.flightradar.R
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButton
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButtonItem
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButtonStack
+import com.ortin.flightradar.presentation.component.mylocationbutton.MyLocationButton
 import com.ortin.flightradar.presentation.viewmodel.LocationViewModel
 import com.ortin.flightradar.ui.theme.OnBackground
 import org.koin.androidx.compose.koinViewModel
@@ -39,9 +39,9 @@ import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.maps.Style
 import org.ramani.compose.CameraPosition
 import org.ramani.compose.MapLibre
-import org.ramani.compose.Margins
 import org.ramani.compose.Symbol
 import org.ramani.compose.UiSettings
+import org.ramani.compose.rememberMapViewWithLifecycle
 
 @Composable
 fun MapScreen(isFlyoutButtonVisible: Boolean) {
@@ -49,7 +49,7 @@ fun MapScreen(isFlyoutButtonVisible: Boolean) {
     val key = context.getString(R.string.MAPS_API_KEY)
 
     val locationVM: LocationViewModel = koinViewModel()
-    val userLocation by locationVM.location
+    val userLocation = locationVM.location
 
     val buttons: List<FlyoutButtonItem> = listOf(
         FlyoutButtonItem.FAQ,
@@ -65,23 +65,24 @@ fun MapScreen(isFlyoutButtonVisible: Boolean) {
     )
 
     var isBackgroundDark by remember { mutableStateOf(false) }
+    val interactionSource = remember { MutableInteractionSource() }
 
     val mapUiSettings = UiSettings(
         isLogoEnabled = false,
         isAttributionEnabled = false,
-        compassGravity = Gravity.BOTTOM,
-        compassMargins = Margins(left = 90, bottom = 212)
+        rotateGesturesEnabled = false
     )
-    val cameraPosition = rememberSaveable {
-        CameraPosition(
-            target = LatLng(55.699402, 37.625485),
-            zoom = 17.0
+    val cameraPosition = remember {
+        mutableStateOf(
+            CameraPosition(
+                target = LatLng(55.699402, 37.625485),
+                zoom = 17.0
+            )
         )
-    } // сделать возврат камеры на геолокацию пользователя по кнопке
+    }
 
     var styleState by remember { mutableStateOf(false) }
-
-    val interactionSource = remember { MutableInteractionSource() }
+    val mapView = rememberMapViewWithLifecycle()
 
     Box(modifier = Modifier.fillMaxSize()) {
         MapLibre(
@@ -89,11 +90,12 @@ fun MapScreen(isFlyoutButtonVisible: Boolean) {
                 .fillMaxSize()
                 .align(Alignment.Center),
             uiSettings = mapUiSettings,
-            cameraPosition = cameraPosition,
+            cameraPosition = cameraPosition.value,
             onMapClick = { if (isClickEnable.value) MainActivity.onMapClicked() },
             onStyleLoaded = { style ->
                 styleState = style.isFullyLoaded
             },
+            mapView = mapView,
             styleBuilder = Style.Builder()
                 .fromUri("https://api.maptiler.com/maps/streets-v2/style.json?key=$key"),
         ) {
@@ -102,7 +104,9 @@ fun MapScreen(isFlyoutButtonVisible: Boolean) {
                     center = LatLng(55.699402, 37.625485),
                     text = "ЗИТ Офис",
                     onClick = {
-                        Toast.makeText(context, "Это главный офис ФГУП ЗИТ", Toast.LENGTH_SHORT).show()
+                        Toast
+                            .makeText(context, "Это главный офис ФГУП ЗИТ", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 )
             }
@@ -116,7 +120,7 @@ fun MapScreen(isFlyoutButtonVisible: Boolean) {
                         interactionSource = interactionSource,
                         indication = null
                     ) {
-                        /* do nothing */
+                        /* no content */
                     }
             )
         }
@@ -144,6 +148,16 @@ fun MapScreen(isFlyoutButtonVisible: Boolean) {
                     Spacer(Modifier.height(8.dp))
                 }
             }
+        }
+        userLocation.value?.let {
+            MyLocationButton(
+                modifier = Modifier
+                    .padding(bottom = 50.dp)
+                    .align(Alignment.BottomStart)
+                    .padding(32.dp),
+                userLocation = it,
+                cameraPosition = cameraPosition
+            )
         }
     }
 }
