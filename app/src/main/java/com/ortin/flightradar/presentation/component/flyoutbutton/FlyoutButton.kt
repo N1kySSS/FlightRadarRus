@@ -2,8 +2,6 @@ package com.ortin.flightradar.presentation.component.flyoutbutton
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -35,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ortin.flightradar.MainActivity.Companion.isClickEnable
 import com.ortin.flightradar.R
+import com.ortin.flightradar.presentation.util.clickableWithoutIndication
 import com.ortin.flightradar.ui.theme.Background
 import com.ortin.flightradar.ui.theme.Primary
 import com.ortin.flightradar.ui.theme.Selected
@@ -50,7 +49,6 @@ fun BoxScope.FlyoutButtonStack(
     onClick: () -> Unit,
     content: @Composable FlyoutScope.() -> Unit,
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
     var isVisible by remember { mutableStateOf(false) }
     val scope = remember {
         FlyoutScope {
@@ -74,15 +72,14 @@ fun BoxScope.FlyoutButtonStack(
                     color = Background,
                     shape = CircleShape
                 )
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = null
-                ) {
-                    // Maybe add hidden FlyoutButtons and darkBox after map clicked
-                    isClickEnable.value = !isClickEnable.value
-                    onClick()
-                    scope.toggle()
-                },
+                .clickableWithoutIndication(
+                    onClick = {
+                        // Maybe add hidden FlyoutButtons and darkBox after map clicked
+                        isClickEnable.value = !isClickEnable.value
+                        onClick()
+                        scope.toggle()
+                    }
+                ),
             painter = painterResource(R.drawable.more),
             contentDescription = "Profile",
             tint = if (isVisible) Selected else Primary
@@ -96,17 +93,16 @@ fun FlyoutScope.FlyoutButton(
     title: String,
     icon: Int
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             modifier = Modifier
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = null
-                ) { /* TODO(Add action) */ },
+                .clickableWithoutIndication(
+                    onClick = {
+                        TODO("Add action")
+                    }
+                ),
             text = title,
             style = TextStyle(
                 color = Primary,
@@ -124,10 +120,11 @@ fun FlyoutScope.FlyoutButton(
                     color = Background,
                     shape = CircleShape
                 )
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = null
-                ) { /* TODO(Add action) */ }
+                .clickableWithoutIndication(
+                    onClick = {
+                        TODO("Add action")
+                    }
+                ),
         ) {
             Icon(
                 modifier = Modifier

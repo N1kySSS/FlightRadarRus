@@ -4,8 +4,6 @@ import android.widget.Toast
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -17,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +29,7 @@ import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButton
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButtonItem
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButtonStack
 import com.ortin.flightradar.presentation.component.mylocationbutton.MyLocationButton
+import com.ortin.flightradar.presentation.util.clickableWithoutIndication
 import com.ortin.flightradar.presentation.viewmodel.LocationViewModel
 import com.ortin.flightradar.ui.theme.OnBackground
 import org.koin.androidx.compose.koinViewModel
@@ -65,7 +63,6 @@ fun MapScreen(isFlyoutButtonVisible: Boolean) {
     )
 
     var isBackgroundDark by remember { mutableStateOf(false) }
-    val interactionSource = remember { MutableInteractionSource() }
 
     val mapUiSettings = UiSettings(
         isLogoEnabled = false,
@@ -116,12 +113,11 @@ fun MapScreen(isFlyoutButtonVisible: Boolean) {
                 modifier = Modifier
                     .fillMaxSize()
                     .background(OnBackground)
-                    .clickable(
-                        interactionSource = interactionSource,
-                        indication = null
-                    ) {
-                        /* no content */
-                    }
+                    .clickableWithoutIndication(
+                        onClick = {
+                            /* do nothing */
+                        }
+                    )
             )
         }
         FlyoutButtonStack(

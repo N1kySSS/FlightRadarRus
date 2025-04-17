@@ -3,8 +3,6 @@ package com.ortin.flightradar.presentation.component.topbar
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,13 +11,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.ortin.flightradar.R
+import com.ortin.flightradar.presentation.util.clickableWithoutIndication
 import com.ortin.flightradar.ui.theme.Background
 import com.ortin.flightradar.ui.theme.Primary
 
@@ -31,7 +29,6 @@ fun CustomTopAppBar(
     onIconClick: () -> Unit,
     onValueChanged: (String) -> Unit
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
     val rotationAngle by animateFloatAsState(
         targetValue = if (isSheetVisible) 180f else 0f,
         animationSpec = tween(durationMillis = 500),
@@ -49,13 +46,10 @@ fun CustomTopAppBar(
     ) {
         Icon(
             modifier = Modifier
-                .clickable(
+                .clickableWithoutIndication(
                     enabled = isIconEnable,
-                    interactionSource = interactionSource,
-                    indication = null
-                ) {
-                    onIconClick()
-                }
+                    onClick = onIconClick
+                )
                 .rotate(rotationAngle),
             painter = painterResource(R.drawable.arrow_down),
             contentDescription = "More info",
