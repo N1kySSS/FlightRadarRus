@@ -46,7 +46,6 @@ class MainActivity : ComponentActivity(), ActivityCompat.OnRequestPermissionsRes
         }
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

@@ -43,7 +43,7 @@ fun CustomSearchBar(
             .padding(horizontal = 16.dp, vertical = 4.dp),
         value = value,
         onValueChange = onValueChanged,
-        placeholder = { Text(text = "FlightRadarRus", letterSpacing = 2.sp) },
+        placeholder = { Text(text = "OpenAirRadar") },
         singleLine = true,
         shape = RoundedCornerShape(10.dp),
         leadingIcon = {
