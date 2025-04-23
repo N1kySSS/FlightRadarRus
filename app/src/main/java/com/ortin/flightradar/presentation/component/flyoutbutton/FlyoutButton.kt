@@ -7,9 +7,6 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -22,13 +19,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ortin.flightradar.MainActivity.Companion.isClickEnable
@@ -89,7 +84,7 @@ fun BoxScope.FlyoutButtonStack(
 
 @Composable
 fun FlyoutScope.FlyoutButton(
-    route: String,
+    onClick: () -> Unit,
     title: String,
     icon: Int
 ) {
@@ -99,9 +94,7 @@ fun FlyoutScope.FlyoutButton(
         Text(
             modifier = Modifier
                 .clickableWithoutIndication(
-                    onClick = {
-                        TODO("Add action")
-                    }
+                    onClick = onClick
                 ),
             text = title,
             style = TextStyle(
@@ -121,9 +114,7 @@ fun FlyoutScope.FlyoutButton(
                     shape = CircleShape
                 )
                 .clickableWithoutIndication(
-                    onClick = {
-                        TODO("Add action")
-                    }
+                    onClick = onClick
                 ),
         ) {
             Icon(
@@ -134,41 +125,6 @@ fun FlyoutScope.FlyoutButton(
                 contentDescription = title,
                 tint = Primary
             )
-        }
-    }
-}
-
-
-@Preview
-@Composable
-fun FlyoutButtonPreview() {
-    val buttons: List<FlyoutButtonItem> = listOf(
-        FlyoutButtonItem.FAQ,
-        FlyoutButtonItem.Feedback,
-        FlyoutButtonItem.Information,
-    )
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Gray)
-    ) {
-        FlyoutButtonStack(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(32.dp),
-            onClick = {}
-        ) {
-            Column(horizontalAlignment = Alignment.End) {
-                buttons.forEach { item: FlyoutButtonItem ->
-                    FlyoutButton(
-                        route = item.route,
-                        title = item.title,
-                        icon = item.icon
-                    )
-                    Spacer(Modifier.height(8.dp))
-                }
-            }
         }
     }
 }

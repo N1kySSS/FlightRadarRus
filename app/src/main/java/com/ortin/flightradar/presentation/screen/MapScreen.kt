@@ -1,6 +1,5 @@
 package com.ortin.flightradar.presentation.screen
 
-import android.widget.Toast
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,6 +22,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelStoreOwner
+import androidx.navigation.NavHostController
 import com.ortin.flightradar.MainActivity
 import com.ortin.flightradar.MainActivity.Companion.isClickEnable
 import com.ortin.flightradar.R
@@ -37,17 +39,20 @@ import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.maps.Style
 import org.ramani.compose.CameraPosition
 import org.ramani.compose.MapLibre
-import org.ramani.compose.Symbol
 import org.ramani.compose.UiSettings
 import org.ramani.compose.rememberMapViewWithLifecycle
 
 @Composable
-fun MapScreen(isSideButtonsVisible: Boolean) {
+fun MapScreen(
+    navController: NavHostController,
+    isSideButtonsVisible: MutableState<Boolean>
+) {
     val context = LocalContext.current
     val key = context.getString(R.string.MAPS_API_KEY)
 
-    val viewModel: MapScreenViewModel = koinViewModel()
-    val userLocation = viewModel.location
+    val activity = context as ViewModelStoreOwner
+    val viewModel: MapScreenViewModel = koinViewModel(viewModelStoreOwner = activity)
+    val userLocation = viewModel.location.value
 
     val buttons: List<FlyoutButtonItem> = listOf(
         FlyoutButtonItem.FAQ,
@@ -57,12 +62,12 @@ fun MapScreen(isSideButtonsVisible: Boolean) {
 
     val localWidth = LocalConfiguration.current.screenWidthDp
     val flyoutButtonOffsetX by animateDpAsState(
-        targetValue = if (isSideButtonsVisible) 0.dp else localWidth.dp,
+        targetValue = if (isSideButtonsVisible.value) 0.dp else localWidth.dp,
         animationSpec = tween(durationMillis = 400),
         label = "FlyoutButtonStack offset"
     )
     val myLocationButtonOffsetX by animateDpAsState(
-        targetValue = if (isSideButtonsVisible) 0.dp else -localWidth.dp,
+        targetValue = if (isSideButtonsVisible.value) 0.dp else -localWidth.dp,
         animationSpec = tween(durationMillis = 400),
         label = "MyLocationButton offset"
     )
@@ -101,18 +106,18 @@ fun MapScreen(isSideButtonsVisible: Boolean) {
             styleBuilder = Style.Builder()
                 .fromUri("https://api.maptiler.com/maps/streets-v2/style.json?key=$key"),
         ) {
-            if (styleState) {
-                Symbol(
-                    center = LatLng(55.699402, 37.625485),
-                    onClick = {
-                        Toast
-                            .makeText(context, "Это главный офис ФГУП ЗИТ", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                )
-            }
+//            if (styleState) {
+//                Symbol(
+//                    center = LatLng(55.699402, 37.625485),
+//                    onClick = {
+//                        Toast
+//                            .makeText(context, "Это главный офис ФГУП ЗИТ", Toast.LENGTH_SHORT)
+//                            .show()
+//                    }
+//                )
+//            }
         }
-        userLocation.value?.let {
+        userLocation?.let {
             MyLocationButton(
                 modifier = Modifier
                     .offset {
@@ -158,7 +163,9 @@ fun MapScreen(isSideButtonsVisible: Boolean) {
             Column(horizontalAlignment = Alignment.End) {
                 buttons.forEach { item: FlyoutButtonItem ->
                     FlyoutButton(
-                        route = item.route,
+                        onClick = {
+                            navController.navigate(item.route)
+                        },
                         title = item.title,
                         icon = item.icon
                     )
