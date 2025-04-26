@@ -1,5 +1,7 @@
 [versions]
 agp = "8.6.0"
+jakartaActivation = "2.0.1"
+jakartaMail = "2.0.1"
 koin = "4.0.3"
 kotlin = "1.9.0"
 coreKtx = "1.15.0"
@@ -20,6 +22,8 @@ constraintlayout = "2.2.0"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+jakarta-activation = { module = "com.sun.activation:jakarta.activation", version.ref = "jakartaActivation" }
+jakarta-mail = { module = "com.sun.mail:jakarta.mail", version.ref = "jakartaMail" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

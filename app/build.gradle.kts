@@ -27,6 +27,12 @@ android {
 
         val apiKey = properties.getProperty("MAPS_API_KEY")
         resValue("string", "MAPS_API_KEY", apiKey)
+
+        val myMail = properties.getProperty("MY_EMAIL")
+        resValue("string", "MY_EMAIL", myMail)
+
+        val myPassword = properties.getProperty("MY_PASSWORD")
+        resValue("string", "MY_PASSWORD", myPassword)
     }
 
     buildTypes {
@@ -55,7 +61,7 @@ android {
     }
     packaging {
         resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "/META-INF/{LICENSE.md,NOTICE.md}"
         }
     }
 }
@@ -86,6 +92,9 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.navigation)
     implementation(libs.koin.androidx.compose)
+
+    implementation(libs.jakarta.mail)
+    implementation(libs.jakarta.activation)
 
     implementation(libs.androidx.navigation.compose)
 }
