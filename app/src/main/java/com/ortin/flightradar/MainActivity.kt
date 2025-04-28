@@ -23,7 +23,6 @@ import com.ortin.flightradar.domain.location.MyLocationUtil
 import com.ortin.flightradar.domain.location.requestLocationPermission
 import com.ortin.flightradar.presentation.component.navbar.CustomBottomNavBar
 import com.ortin.flightradar.presentation.component.topbar.CustomTopAppBar
-import com.ortin.flightradar.presentation.component.topsheet.CustomTopSheet
 import com.ortin.flightradar.presentation.navigation.AppScreenFlow
 import com.ortin.flightradar.presentation.navigation.Screen
 import com.ortin.flightradar.presentation.viewmodel.MapScreenViewModel
@@ -88,10 +87,6 @@ class MainActivity : ComponentActivity(), ActivityCompat.OnRequestPermissionsRes
                                     exit = slideOutVertically(animationSpec = tween(400)) { -it },
                                     enter = slideInVertically(animationSpec = tween(540)) { -it }
                                 ) {
-                                    CustomTopSheet(
-                                        isVisible = isSheetVisible.value,
-                                        content = { /* Content will be added later */ }
-                                    )
                                     CustomTopAppBar(
                                         value = "",
                                         isSheetVisible = isSheetVisible.value,

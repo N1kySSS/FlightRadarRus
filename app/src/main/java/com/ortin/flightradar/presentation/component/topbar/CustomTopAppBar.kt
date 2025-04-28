@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.ortin.flightradar.R
+import com.ortin.flightradar.presentation.component.topsheet.CustomTopSheet
 import com.ortin.flightradar.presentation.util.clickableWithoutIndication
 import com.ortin.flightradar.ui.theme.Background
 import com.ortin.flightradar.ui.theme.Primary
@@ -66,4 +67,8 @@ fun CustomTopAppBar(
             tint = Primary
         )
     }
+    CustomTopSheet(
+        isVisible = isSheetVisible,
+        content = {}
+    )
 }
