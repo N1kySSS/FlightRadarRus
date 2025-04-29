@@ -16,12 +16,14 @@ import com.ortin.flightradar.data.location.LocationData
 import com.ortin.flightradar.presentation.util.clickableWithoutIndication
 import com.ortin.flightradar.ui.theme.Background
 import com.ortin.flightradar.ui.theme.Primary
-import org.maplibre.android.geometry.LatLng
-import org.ramani.compose.CameraPosition
+import com.yandex.mapkit.geometry.Point
+import com.yandex.mapkit.map.CameraPosition
+import com.yandex.mapkit.mapview.MapView
 
 @Composable
 fun MyLocationButton(
     modifier: Modifier,
+    mapView: MapView,
     userLocation: LocationData,
     cameraPosition: MutableState<CameraPosition>
 ) {
@@ -35,9 +37,12 @@ fun MyLocationButton(
             .clickableWithoutIndication(
                 onClick = {
                     cameraPosition.value = CameraPosition(
-                        target = LatLng(userLocation.latitude, userLocation.longitude),
-                        zoom = 11.0
+                        Point(userLocation.latitude, userLocation.longitude),
+                        11.0f,
+                        150.0f,
+                        90.0f
                     )
+                    mapView.mapWindow.map.move(cameraPosition.value)
                 }
             )
     ) {

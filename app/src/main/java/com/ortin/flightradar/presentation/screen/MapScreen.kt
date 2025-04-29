@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,11 +23,12 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
-import com.ortin.flightradar.MainActivity
-import com.ortin.flightradar.MainActivity.Companion.isClickEnable
-import com.ortin.flightradar.R
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButton
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButtonItem
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButtonStack
@@ -34,13 +36,11 @@ import com.ortin.flightradar.presentation.component.mylocationbutton.MyLocationB
 import com.ortin.flightradar.presentation.util.clickableWithoutIndication
 import com.ortin.flightradar.presentation.viewmodel.MapScreenViewModel
 import com.ortin.flightradar.ui.theme.OnBackground
+import com.yandex.mapkit.MapKitFactory
+import com.yandex.mapkit.geometry.Point
+import com.yandex.mapkit.map.CameraPosition
+import com.yandex.mapkit.mapview.MapView
 import org.koin.androidx.compose.koinViewModel
-import org.maplibre.android.geometry.LatLng
-import org.maplibre.android.maps.Style
-import org.ramani.compose.CameraPosition
-import org.ramani.compose.MapLibre
-import org.ramani.compose.UiSettings
-import org.ramani.compose.rememberMapViewWithLifecycle
 
 @Composable
 fun MapScreen(
@@ -48,7 +48,9 @@ fun MapScreen(
     isSideButtonsVisible: MutableState<Boolean>
 ) {
     val context = LocalContext.current
-    val key = context.getString(R.string.MAPS_API_KEY)
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    val mapView = remember { MapView(context) }
 
     val activity = context as ViewModelStoreOwner
     val viewModel: MapScreenViewModel = koinViewModel(viewModelStoreOwner = activity)
@@ -74,49 +76,45 @@ fun MapScreen(
 
     var isBackgroundDark by remember { mutableStateOf(false) }
 
-    val mapUiSettings = UiSettings(
-        isLogoEnabled = false,
-        isAttributionEnabled = false,
-        rotateGesturesEnabled = false
-    )
     val cameraPosition = remember {
         mutableStateOf(
             CameraPosition(
-                target = LatLng(55.699402, 37.625485),
-                zoom = 17.0
+                Point(55.699402, 37.625485),
+                17.0f,
+                150.0f,
+                90.0f
             )
         )
     }
 
-    var styleState by remember { mutableStateOf(false) }
-    val mapView = rememberMapViewWithLifecycle()
+    DisposableEffect(lifecycleOwner) {
+        MapKitFactory.getInstance().onStart()
+        mapView.onStart()
+
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_START) {
+                MapKitFactory.getInstance().onStart()
+                mapView.onStart()
+            } else if (event == Lifecycle.Event.ON_STOP) {
+                mapView.onStop()
+                MapKitFactory.getInstance().onStop()
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+            mapView.onStop()
+            MapKitFactory.getInstance().onStop()
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        MapLibre(
-            modifier = Modifier
-                .fillMaxSize()
-                .align(Alignment.Center),
-            uiSettings = mapUiSettings,
-            cameraPosition = cameraPosition.value,
-            onMapClick = { if (isClickEnable.value) MainActivity.onMapClicked() },
-            onStyleLoaded = { style ->
-                styleState = style.isFullyLoaded
-            },
-            mapView = mapView,
-            styleBuilder = Style.Builder()
-                .fromUri("https://api.maptiler.com/maps/streets-v2/style.json?key=$key"),
-        ) {
-//            if (styleState) {
-//                Symbol(
-//                    center = LatLng(55.699402, 37.625485),
-//                    onClick = {
-//                        Toast
-//                            .makeText(context, "Это главный офис ФГУП ЗИТ", Toast.LENGTH_SHORT)
-//                            .show()
-//                    }
-//                )
-//            }
-        }
+        AndroidView(
+            modifier = Modifier.fillMaxSize(),
+            factory = { mapView }
+        )
         userLocation?.let {
             MyLocationButton(
                 modifier = Modifier
@@ -130,6 +128,7 @@ fun MapScreen(
                     .padding(bottom = 50.dp)
                     .align(Alignment.BottomStart)
                     .padding(32.dp),
+                mapView = mapView,
                 userLocation = it,
                 cameraPosition = cameraPosition
             )

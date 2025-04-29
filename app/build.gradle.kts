@@ -33,6 +33,9 @@ android {
 
         val myPassword = properties.getProperty("MY_PASSWORD")
         resValue("string", "MY_PASSWORD", myPassword)
+
+        val mapKitApiKey = properties.getProperty("MAPKIT_API_KEY")
+        resValue("string", "MAPKIT_API_KEY", mapKitApiKey)
     }
 
     buildTypes {
@@ -86,8 +89,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation(libs.ramani.maps.ramani.maplibre)
     implementation(libs.play.services.location)
+    implementation(libs.maps.mobile)
 
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.navigation)
