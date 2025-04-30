@@ -29,6 +29,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
+import com.ortin.flightradar.MainActivity
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButton
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButtonItem
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButtonStack
@@ -39,7 +40,10 @@ import com.ortin.flightradar.ui.theme.OnBackground
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
+import com.yandex.mapkit.map.InputListener
+import com.yandex.mapkit.map.Map
 import com.yandex.mapkit.mapview.MapView
+import com.yandex.mapkit.user_location.UserLocationLayer
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -55,6 +59,7 @@ fun MapScreen(
     val activity = context as ViewModelStoreOwner
     val viewModel: MapScreenViewModel = koinViewModel(viewModelStoreOwner = activity)
     val userLocation = viewModel.location.value
+    var userLocationLayer: UserLocationLayer? = null
 
     val buttons: List<FlyoutButtonItem> = listOf(
         FlyoutButtonItem.FAQ,
@@ -81,13 +86,29 @@ fun MapScreen(
             CameraPosition(
                 Point(55.699402, 37.625485),
                 17.0f,
-                150.0f,
-                90.0f
+                0f,
+                0f
             )
         )
     }
 
+    val inputListener = object : InputListener {
+        override fun onMapTap(map: Map, point: Point) {
+            if (MainActivity.isClickEnable.value) {
+                MainActivity.onMapClicked()
+            }
+        }
+
+        override fun onMapLongTap(p0: Map, p1: Point) {
+            /* do nothing */
+        }
+    }
+    mapView.mapWindow.map.addInputListener(inputListener)
+
     DisposableEffect(lifecycleOwner) {
+        mapView.mapWindow.map.move(
+            cameraPosition.value
+        )
         MapKitFactory.getInstance().onStart()
         mapView.onStart()
 
@@ -95,6 +116,13 @@ fun MapScreen(
             if (event == Lifecycle.Event.ON_START) {
                 MapKitFactory.getInstance().onStart()
                 mapView.onStart()
+
+                if (userLocationLayer == null) {
+                    userLocationLayer = MapKitFactory.getInstance().createUserLocationLayer(mapView.mapWindow).apply {
+                        isVisible = true
+                        isHeadingEnabled = true
+                    }
+                }
             } else if (event == Lifecycle.Event.ON_STOP) {
                 mapView.onStop()
                 MapKitFactory.getInstance().onStop()

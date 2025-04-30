@@ -16,6 +16,7 @@ import com.ortin.flightradar.data.location.LocationData
 import com.ortin.flightradar.presentation.util.clickableWithoutIndication
 import com.ortin.flightradar.ui.theme.Background
 import com.ortin.flightradar.ui.theme.Primary
+import com.yandex.mapkit.Animation
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.mapview.MapView
@@ -39,10 +40,14 @@ fun MyLocationButton(
                     cameraPosition.value = CameraPosition(
                         Point(userLocation.latitude, userLocation.longitude),
                         11.0f,
-                        150.0f,
-                        90.0f
+                        0f,
+                        0f
                     )
-                    mapView.mapWindow.map.move(cameraPosition.value)
+                    mapView.mapWindow.map.move(
+                        cameraPosition.value,
+                        Animation(Animation.Type.LINEAR, 1.5f),
+                        null
+                    )
                 }
             )
     ) {
