@@ -7,15 +7,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 
 fun Modifier.clickableWithoutIndication(
-    onClick: () -> Unit,
-    enabled: Boolean = true,
+    onClick: () -> Unit
 ): Modifier = composed {
     val interactionSource = remember { MutableInteractionSource() }
 
     this.clickable(
         interactionSource = interactionSource,
         indication = null,
-        enabled = enabled,
         onClick = onClick
     )
 }

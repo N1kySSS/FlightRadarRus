@@ -50,11 +50,9 @@ fun CustomHeader(
             modifier = Modifier
                 .padding(bottom = 24.dp)
                 .align(Alignment.BottomEnd)
-                .clickableWithoutIndication(
-                    onClick = {
-                        onBackPressed()
-                    }
-                ),
+                .clickableWithoutIndication {
+                    onBackPressed()
+                },
             painter = painterResource(R.drawable.delete),
             contentDescription = "Go back"
         )

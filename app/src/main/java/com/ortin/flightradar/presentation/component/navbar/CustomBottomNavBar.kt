@@ -61,11 +61,9 @@ fun CustomBottomNavBar() {
                 ) {
                     Icon(
                         modifier = Modifier
-                            .clickableWithoutIndication(
-                                onClick = {
-                                    TODO("Add action")
-                                }
-                            ),
+                            .clickableWithoutIndication {
+                                TODO("Add action")
+                            },
                         painter = painterResource(item.icon),
                         contentDescription = item.title,
                         tint = Primary

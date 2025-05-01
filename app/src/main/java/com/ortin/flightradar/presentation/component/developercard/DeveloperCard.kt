@@ -44,18 +44,15 @@ fun DeveloperCard(
 
     Row(
         modifier = modifier
-            .clickableWithoutIndication(
-                enabled = true,
-                onClick = {
-                    val link = text.split(" ")[2]
+            .clickableWithoutIndication {
+                val link = text.split(" ")[2]
 
-                    val intent = Intent(Intent.ACTION_VIEW).apply {
-                        data = Uri.parse(link)
-                    }
-
-                    context.startActivity(intent)
+                val intent = Intent(Intent.ACTION_VIEW).apply {
+                    data = Uri.parse(link)
                 }
-            )
+
+                context.startActivity(intent)
+            }
             .height(150.dp)
             .fillMaxWidth()
             .background(

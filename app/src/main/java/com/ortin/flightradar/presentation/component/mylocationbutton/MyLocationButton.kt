@@ -35,21 +35,19 @@ fun MyLocationButton(
                 color = Background,
                 shape = CircleShape
             )
-            .clickableWithoutIndication(
-                onClick = {
-                    cameraPosition.value = CameraPosition(
-                        Point(userLocation.latitude, userLocation.longitude),
-                        11.0f,
-                        0f,
-                        0f
-                    )
-                    mapView.mapWindow.map.move(
-                        cameraPosition.value,
-                        Animation(Animation.Type.LINEAR, 1.5f),
-                        null
-                    )
-                }
-            )
+            .clickableWithoutIndication {
+                cameraPosition.value = CameraPosition(
+                    Point(userLocation.latitude, userLocation.longitude),
+                    11.0f,
+                    0f,
+                    0f
+                )
+                mapView.mapWindow.map.move(
+                    cameraPosition.value,
+                    Animation(Animation.Type.LINEAR, 1.5f),
+                    null
+                )
+            }
     ) {
         Icon(
             modifier = Modifier

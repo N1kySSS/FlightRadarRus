@@ -13,10 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -26,7 +23,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ortin.flightradar.MainActivity.Companion.isClickEnable
 import com.ortin.flightradar.R
 import com.ortin.flightradar.presentation.util.clickableWithoutIndication
 import com.ortin.flightradar.ui.theme.Background
@@ -41,13 +37,13 @@ fun interface FlyoutScope {
 @Composable
 fun BoxScope.FlyoutButtonStack(
     modifier: Modifier = Modifier,
+    isFlyoutVisible: Boolean,
     onClick: () -> Unit,
     content: @Composable FlyoutScope.() -> Unit,
 ) {
-    var isVisible by remember { mutableStateOf(false) }
     val scope = remember {
         FlyoutScope {
-            isVisible = !isVisible
+            onClick()
         }
     }
 
@@ -55,7 +51,7 @@ fun BoxScope.FlyoutButtonStack(
         modifier = modifier,
         horizontalAlignment = Alignment.End,
     ) {
-        AnimatedVisibility(visible = isVisible) {
+        AnimatedVisibility(visible = isFlyoutVisible) {
             Column {
                 scope.content()
             }
@@ -67,17 +63,12 @@ fun BoxScope.FlyoutButtonStack(
                     color = Background,
                     shape = CircleShape
                 )
-                .clickableWithoutIndication(
-                    onClick = {
-                        // Maybe add hidden FlyoutButtons and darkBox after map clicked
-                        isClickEnable.value = !isClickEnable.value
-                        onClick()
-                        scope.toggle()
-                    }
-                ),
+                .clickableWithoutIndication {
+                    scope.toggle()
+                },
             painter = painterResource(R.drawable.more),
             contentDescription = "Profile",
-            tint = if (isVisible) Selected else Primary
+            tint = if (isFlyoutVisible) Selected else Primary
         )
     }
 }
@@ -93,9 +84,9 @@ fun FlyoutScope.FlyoutButton(
     ) {
         Text(
             modifier = Modifier
-                .clickableWithoutIndication(
-                    onClick = onClick
-                ),
+                .clickableWithoutIndication {
+                    onClick()
+                },
             text = title,
             style = TextStyle(
                 color = Primary,
@@ -113,9 +104,9 @@ fun FlyoutScope.FlyoutButton(
                     color = Background,
                     shape = CircleShape
                 )
-                .clickableWithoutIndication(
-                    onClick = onClick
-                ),
+                .clickableWithoutIndication {
+                    onClick()
+                },
         ) {
             Icon(
                 modifier = Modifier

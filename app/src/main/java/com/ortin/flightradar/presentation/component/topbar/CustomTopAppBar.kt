@@ -26,7 +26,6 @@ import com.ortin.flightradar.ui.theme.Primary
 fun CustomTopAppBar(
     value: String,
     isSheetVisible: Boolean,
-    isIconEnable: Boolean,
     onIconClick: () -> Unit,
     onValueChanged: (String) -> Unit
 ) {
@@ -47,10 +46,9 @@ fun CustomTopAppBar(
     ) {
         Icon(
             modifier = Modifier
-                .clickableWithoutIndication(
-                    enabled = isIconEnable,
-                    onClick = onIconClick
-                )
+                .clickableWithoutIndication {
+                    onIconClick()
+                }
                 .rotate(rotationAngle),
             painter = painterResource(R.drawable.arrow_down),
             contentDescription = "More info",

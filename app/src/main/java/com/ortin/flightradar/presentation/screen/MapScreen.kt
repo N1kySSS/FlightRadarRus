@@ -12,11 +12,9 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -29,12 +27,12 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
-import com.ortin.flightradar.MainActivity
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButton
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButtonItem
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButtonStack
 import com.ortin.flightradar.presentation.component.mylocationbutton.MyLocationButton
 import com.ortin.flightradar.presentation.util.clickableWithoutIndication
+import com.ortin.flightradar.presentation.viewmodel.MapScreenState
 import com.ortin.flightradar.presentation.viewmodel.MapScreenViewModel
 import com.ortin.flightradar.ui.theme.OnBackground
 import com.yandex.mapkit.MapKitFactory
@@ -49,7 +47,6 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun MapScreen(
     navController: NavHostController,
-    isSideButtonsVisible: MutableState<Boolean>
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -61,6 +58,10 @@ fun MapScreen(
     val userLocation = viewModel.location.value
     var userLocationLayer: UserLocationLayer? = null
 
+    val uiState = viewModel.mapScreenState.value.uiState
+    val mapScreenState = viewModel.mapScreenState.value
+    val isFlyoutVisible = mapScreenState is MapScreenState.FlyoutButtonVisible
+
     val buttons: List<FlyoutButtonItem> = listOf(
         FlyoutButtonItem.FAQ,
         FlyoutButtonItem.Feedback,
@@ -69,17 +70,15 @@ fun MapScreen(
 
     val localWidth = LocalConfiguration.current.screenWidthDp
     val flyoutButtonOffsetX by animateDpAsState(
-        targetValue = if (isSideButtonsVisible.value) 0.dp else localWidth.dp,
+        targetValue = if (uiState.isSideButtonsVisible) 0.dp else localWidth.dp,
         animationSpec = tween(durationMillis = 400),
         label = "FlyoutButtonStack offset"
     )
     val myLocationButtonOffsetX by animateDpAsState(
-        targetValue = if (isSideButtonsVisible.value) 0.dp else -localWidth.dp,
+        targetValue = if (uiState.isSideButtonsVisible) 0.dp else -localWidth.dp,
         animationSpec = tween(durationMillis = 400),
         label = "MyLocationButton offset"
     )
-
-    var isBackgroundDark by remember { mutableStateOf(false) }
 
     val cameraPosition = remember {
         mutableStateOf(
@@ -92,20 +91,20 @@ fun MapScreen(
         )
     }
 
-    val inputListener = object : InputListener {
-        override fun onMapTap(map: Map, point: Point) {
-            if (MainActivity.isClickEnable.value) {
-                MainActivity.onMapClicked()
+    val inputListener = remember {
+        object : InputListener {
+            override fun onMapTap(map: Map, point: Point) {
+                viewModel.changeMapScreenState()
+            }
+
+            override fun onMapLongTap(p0: Map, p1: Point) {
+                /* do nothing */
             }
         }
-
-        override fun onMapLongTap(p0: Map, p1: Point) {
-            /* do nothing */
-        }
     }
-    mapView.mapWindow.map.addInputListener(inputListener)
 
     DisposableEffect(lifecycleOwner) {
+        mapView.mapWindow.map.addInputListener(inputListener)
         mapView.mapWindow.map.move(
             cameraPosition.value
         )
@@ -118,10 +117,12 @@ fun MapScreen(
                 mapView.onStart()
 
                 if (userLocationLayer == null) {
-                    userLocationLayer = MapKitFactory.getInstance().createUserLocationLayer(mapView.mapWindow).apply {
-                        isVisible = true
-                        isHeadingEnabled = true
-                    }
+                    userLocationLayer =
+                        MapKitFactory.getInstance().createUserLocationLayer(mapView.mapWindow)
+                            .apply {
+                                isVisible = true
+                                isHeadingEnabled = true
+                            }
                 }
             } else if (event == Lifecycle.Event.ON_STOP) {
                 mapView.onStop()
@@ -133,6 +134,7 @@ fun MapScreen(
 
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
+            mapView.mapWindow.map.removeInputListener(inputListener)
             mapView.onStop()
             MapKitFactory.getInstance().onStop()
         }
@@ -161,16 +163,14 @@ fun MapScreen(
                 cameraPosition = cameraPosition
             )
         }
-        if (isBackgroundDark) {
+        if (uiState.isBackgroundDark) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(OnBackground)
-                    .clickableWithoutIndication(
-                        onClick = {
-                            /* do nothing */
-                        }
-                    )
+                    .clickableWithoutIndication {
+                        viewModel.toggleFlyout()
+                    }
             )
         }
         FlyoutButtonStack(
@@ -185,7 +185,8 @@ fun MapScreen(
                 .padding(bottom = 50.dp)
                 .align(Alignment.BottomEnd)
                 .padding(32.dp),
-            onClick = { isBackgroundDark = !isBackgroundDark }
+            onClick = { viewModel.toggleFlyout() },
+            isFlyoutVisible = isFlyoutVisible
         ) {
             Column(horizontalAlignment = Alignment.End) {
                 buttons.forEach { item: FlyoutButtonItem ->

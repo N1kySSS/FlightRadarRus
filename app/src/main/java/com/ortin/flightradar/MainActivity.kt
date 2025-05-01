@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
@@ -31,24 +30,6 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinContext
 
 class MainActivity : ComponentActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
-
-    companion object {
-        val isInterfaceVisible = mutableStateOf(true)
-        val isSheetVisible = mutableStateOf(false)
-        val isSideButtonsVisible = mutableStateOf(true)
-        val isClickEnable = mutableStateOf(true)
-
-        fun onMapClicked() {
-            if (isSheetVisible.value) {
-                isSheetVisible.value = !isSheetVisible.value
-                isSideButtonsVisible.value = !isSideButtonsVisible.value
-            } else {
-                isInterfaceVisible.value = !isInterfaceVisible.value
-                isSideButtonsVisible.value = !isSideButtonsVisible.value
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -69,6 +50,8 @@ class MainActivity : ComponentActivity(), ActivityCompat.OnRequestPermissionsRes
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
                     val currentRoute = navBackStackEntry?.destination?.route
 
+                    val uiState = viewModel.mapScreenState.value.uiState
+
                     LaunchedEffect(Unit) {
                         launcher.launch(
                             arrayOf(
@@ -83,20 +66,17 @@ class MainActivity : ComponentActivity(), ActivityCompat.OnRequestPermissionsRes
                         topBar = {
                             if (currentRoute == Screen.MapScreen.route) {
                                 AnimatedVisibility(
-                                    visible = isInterfaceVisible.value,
+                                    visible = uiState.isInterfaceVisible,
                                     exit = slideOutVertically(animationSpec = tween(400)) { -it },
                                     enter = slideInVertically(animationSpec = tween(540)) { -it }
                                 ) {
                                     CustomTopAppBar(
                                         value = "",
-                                        isSheetVisible = isSheetVisible.value,
+                                        isSheetVisible = uiState.isSheetVisible,
                                         onIconClick = {
-                                            isSheetVisible.value = !isSheetVisible.value
-                                            isSideButtonsVisible.value =
-                                                !isSideButtonsVisible.value
+                                            viewModel.showTopSheet()
                                         },
-                                        onValueChanged = {},
-                                        isIconEnable = isClickEnable.value
+                                        onValueChanged = {}
                                     )
                                 }
                             }
@@ -104,7 +84,7 @@ class MainActivity : ComponentActivity(), ActivityCompat.OnRequestPermissionsRes
                         bottomBar = {
                             if (currentRoute == Screen.MapScreen.route) {
                                 AnimatedVisibility(
-                                    visible = isInterfaceVisible.value,
+                                    visible = uiState.isInterfaceVisible,
                                     exit = slideOutVertically(animationSpec = tween(400)) { it },
                                     enter = slideInVertically(animationSpec = tween(400)) { it }
                                 ) {
@@ -115,8 +95,7 @@ class MainActivity : ComponentActivity(), ActivityCompat.OnRequestPermissionsRes
                     ) { innerPadding ->
                         AppScreenFlow(
                             paddingValues = innerPadding,
-                            navController = navController,
-                            isSideButtonsVisible = isSideButtonsVisible
+                            navController = navController
                         )
                     }
                 }
