@@ -27,6 +27,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
+import com.ortin.flightradar.R
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButton
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButtonItem
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButtonStack
@@ -40,8 +41,10 @@ import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.InputListener
 import com.yandex.mapkit.map.Map
+import com.yandex.mapkit.map.TextStyle
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.mapkit.user_location.UserLocationLayer
+import com.yandex.runtime.image.ImageProvider
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -89,6 +92,35 @@ fun MapScreen(
                 0f
             )
         )
+    }
+
+    /**
+     * Это замоканные данные об аэропортах Москвы,
+     * в дальнейшем, они будут получены с бэкенда
+     **/
+    val pinsCollection = mapView.mapWindow.map.mapObjects.addCollection()
+    val points = listOf(
+        Point(55.9761317, 37.410052) to "Шереметьево",
+        Point(55.605787, 37.277518) to "Внуково",
+        Point(55.50773, 37.50635) to "Остафьево",
+        Point(55.406111, 37.908056) to "Домодедово",
+        Point(55.561365, 38.137674) to "Жуковский",
+    )
+
+    val imageProvider = ImageProvider.fromResource(context, R.drawable.location_on)
+
+    points.forEach { point ->
+        pinsCollection.addPlacemark().apply {
+            geometry = point.first
+            setIcon(imageProvider)
+            setText(
+                point.second,
+                TextStyle().apply {
+                    size = 10f
+                    placement = TextStyle.Placement.BOTTOM
+                },
+            )
+        }
     }
 
     val inputListener = remember {
