@@ -74,8 +74,5 @@ fun CustomTopAppBar(
             )
         }
     }
-    CustomTopSheet(
-        isVisible = isSheetVisible,
-        content = {}
-    )
+    CustomTopSheet(isVisible = isSheetVisible)
 }

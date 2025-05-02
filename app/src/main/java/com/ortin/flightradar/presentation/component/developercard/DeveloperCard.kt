@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ortin.flightradar.presentation.util.clickableWithoutIndication
 import com.ortin.flightradar.ui.theme.Background
-import com.ortin.flightradar.ui.theme.ButtonColor
+import com.ortin.flightradar.ui.theme.Additional
 
 @Composable
 fun DeveloperCard(
@@ -62,7 +62,7 @@ fun DeveloperCard(
             .border(
                 width = 2.dp,
                 shape = RoundedCornerShape(12.dp),
-                color = ButtonColor
+                color = Additional
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start

@@ -52,7 +52,7 @@ fun CustomSearchBar(
                 if (it.isFocused)  {
                     isIconVisible.value = false
                     horizontalPadding.value = 0.dp
-                    placeholderText.value = "Рейс, аэропорт, авиакомпания"
+                    placeholderText.value = "Рейс, аэропорт"
                 }
                 else {
                     isIconVisible.value = true

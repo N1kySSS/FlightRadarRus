@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ortin.flightradar.presentation.component.header.CustomHeader
 import com.ortin.flightradar.presentation.viewmodel.FeedbackScreenViewModel
-import com.ortin.flightradar.ui.theme.ButtonColor
+import com.ortin.flightradar.ui.theme.Additional
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -111,7 +111,7 @@ fun FeedbackScreen(
                     focusManager.clearFocus()
                 }
             ),
-            colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = ButtonColor)
+            colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Additional)
         )
         Text(
             modifier = Modifier
@@ -137,7 +137,7 @@ fun FeedbackScreen(
                     .show()
             },
             shape = RoundedCornerShape(10.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = ButtonColor)
+            colors = ButtonDefaults.buttonColors(containerColor = Additional)
         ) {
             Text(
                 text = "Подтвердить",
