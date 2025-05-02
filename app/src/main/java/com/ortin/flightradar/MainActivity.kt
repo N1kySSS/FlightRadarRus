@@ -12,6 +12,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -39,7 +40,10 @@ class MainActivity : ComponentActivity(), ActivityCompat.OnRequestPermissionsRes
                 FlightRadarTheme {
                     val context = LocalContext.current
                     val myLocationUtil = MyLocationUtil(context)
+
                     val viewModel: MapScreenViewModel = koinViewModel()
+                    val text by viewModel.text.collectAsState()
+
                     val launcher = requestLocationPermission(
                         context = context,
                         viewModel = viewModel,
@@ -71,12 +75,12 @@ class MainActivity : ComponentActivity(), ActivityCompat.OnRequestPermissionsRes
                                     enter = slideInVertically(animationSpec = tween(540)) { -it }
                                 ) {
                                     CustomTopAppBar(
-                                        value = "",
+                                        value = text,
                                         isSheetVisible = uiState.isSheetVisible,
                                         onIconClick = {
                                             viewModel.showTopSheet()
                                         },
-                                        onValueChanged = {}
+                                        onValueChanged = viewModel::onTextChange
                                     )
                                 }
                             }

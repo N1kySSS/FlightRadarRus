@@ -11,13 +11,17 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.ortin.flightradar.R
 import com.ortin.flightradar.ui.theme.Primary
 import com.ortin.flightradar.ui.theme.Selected
@@ -27,6 +31,7 @@ fun CustomSearchBar(
     onValueChanged: (String) -> Unit,
     value: String,
     modifier: Modifier = Modifier,
+    isIconVisible: MutableState<Boolean>,
     placeholderColor: Color = Color.Gray,
     focusedIconsColor: Color = Selected,
     unfocusedIconsColor: Color = Primary,
@@ -36,15 +41,35 @@ fun CustomSearchBar(
     unfocusedContainerColor: Color = Color.White
 ) {
     val focusManager = LocalFocusManager.current
+    val placeholderText = remember { mutableStateOf("OpenAirRadar") }
+    val horizontalPadding = remember { mutableStateOf(16.dp) }
 
     OutlinedTextField(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp),
+            .padding(horizontal = horizontalPadding.value, vertical = 4.dp)
+            .onFocusChanged {
+                if (it.isFocused)  {
+                    isIconVisible.value = false
+                    horizontalPadding.value = 0.dp
+                    placeholderText.value = "Рейс, аэропорт, авиакомпания"
+                }
+                else {
+                    isIconVisible.value = true
+                    horizontalPadding.value = 16.dp
+                    placeholderText.value = "OpenAirRadar"
+                }
+            },
         value = value,
         onValueChange = onValueChanged,
-        placeholder = { Text(text = "OpenAirRadar") },
+        placeholder = {
+            Text(
+                text = placeholderText.value,
+                overflow = TextOverflow.Ellipsis,
+            )
+        },
         singleLine = true,
+        maxLines = 1,
         shape = RoundedCornerShape(10.dp),
         leadingIcon = {
             Icon(

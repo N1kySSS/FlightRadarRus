@@ -4,13 +4,23 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.ortin.flightradar.data.location.LocationData
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class MapScreenViewModel : ViewModel() {
+
+    private val _text = MutableStateFlow("")
+    val text = _text.asStateFlow()
+
     private val _location = mutableStateOf<LocationData?>(null)
     val location = _location
 
     private val _mapScreenState = mutableStateOf<MapScreenState>(MapScreenState.Default)
     val mapScreenState: State<MapScreenState> = _mapScreenState
+
+    fun onTextChange(text: String) {
+        _text.value = text.trimStart()
+    }
 
     fun updateLocation(newLocation: LocationData) {
         _location.value = newLocation

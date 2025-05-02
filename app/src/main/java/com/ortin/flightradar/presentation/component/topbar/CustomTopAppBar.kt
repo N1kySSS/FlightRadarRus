@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -35,6 +37,8 @@ fun CustomTopAppBar(
         label = "Rotation"
     )
 
+    val isIconVisible = remember { mutableStateOf(true) }
+
     Row(
         modifier = Modifier
             .height(110.dp)
@@ -44,26 +48,31 @@ fun CustomTopAppBar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Icon(
-            modifier = Modifier
-                .clickableWithoutIndication {
-                    onIconClick()
-                }
-                .rotate(rotationAngle),
-            painter = painterResource(R.drawable.arrow_down),
-            contentDescription = "More info",
-            tint = Primary
-        )
+        if (isIconVisible.value) {
+            Icon(
+                painter = painterResource(R.drawable.app_icon),
+                contentDescription = "ЗИТ",
+                tint = Primary
+            )
+        }
         CustomSearchBar(
             onValueChanged = onValueChanged,
             value = value,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            isIconVisible = isIconVisible
         )
-        Icon(
-            painter = painterResource(R.drawable.app_icon),
-            contentDescription = "ЗИТ",
-            tint = Primary
-        )
+        if (isIconVisible.value) {
+            Icon(
+                modifier = Modifier
+                    .clickableWithoutIndication {
+                        onIconClick()
+                    }
+                    .rotate(rotationAngle),
+                painter = painterResource(R.drawable.arrow_down),
+                contentDescription = "More info",
+                tint = Primary
+            )
+        }
     }
     CustomTopSheet(
         isVisible = isSheetVisible,
