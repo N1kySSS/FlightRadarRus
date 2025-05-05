@@ -23,12 +23,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ortin.flightradar.data.bottomsheet.SheetContent
 import com.ortin.flightradar.presentation.util.clickableWithoutIndication
 import com.ortin.flightradar.ui.theme.Background
 import com.ortin.flightradar.ui.theme.Primary
 
 @Composable
-fun CustomBottomNavBar() {
+fun CustomBottomNavBar(
+    onClickFirstAction: (SheetContent?) -> Unit,
+    onClickSecondAction: () -> Unit
+) {
     val screens: List<NavigationBarItem> = listOf(
         NavigationBarItem.Settings,
         NavigationBarItem.Weather,
@@ -62,7 +66,10 @@ fun CustomBottomNavBar() {
                     Icon(
                         modifier = Modifier
                             .clickableWithoutIndication {
-                                TODO("Add action")
+                                if (item.sheetContent != null) {
+                                    onClickFirstAction(item.sheetContent)
+                                    onClickSecondAction()
+                                }
                             },
                         painter = painterResource(item.icon),
                         contentDescription = item.title,
@@ -82,10 +89,4 @@ fun CustomBottomNavBar() {
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun CustomBottomNavBarPreview() {
-    CustomBottomNavBar()
 }

@@ -92,7 +92,10 @@ class MainActivity : ComponentActivity(), ActivityCompat.OnRequestPermissionsRes
                                     exit = slideOutVertically(animationSpec = tween(400)) { it },
                                     enter = slideInVertically(animationSpec = tween(400)) { it }
                                 ) {
-                                    CustomBottomNavBar()
+                                    CustomBottomNavBar(
+                                        onClickFirstAction = viewModel::changeActiveSheet,
+                                        onClickSecondAction = viewModel::changeBottomSheetState
+                                    )
                                 }
                             }
                         }

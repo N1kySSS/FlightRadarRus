@@ -3,11 +3,18 @@ package com.ortin.flightradar.presentation.viewmodel
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.ortin.flightradar.data.bottomsheet.SheetContent
 import com.ortin.flightradar.data.location.LocationData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class MapScreenViewModel : ViewModel() {
+
+    private val _bottomSheetState = mutableStateOf(false)
+    val bottomSheetState = _bottomSheetState
+
+    private val _activeSheet = mutableStateOf<SheetContent?>(null)
+    val activeSheet: State<SheetContent?> = _activeSheet
 
     private val _text = MutableStateFlow("")
     val text = _text.asStateFlow()
@@ -17,6 +24,14 @@ class MapScreenViewModel : ViewModel() {
 
     private val _mapScreenState = mutableStateOf<MapScreenState>(MapScreenState.Default)
     val mapScreenState: State<MapScreenState> = _mapScreenState
+
+    fun changeBottomSheetState() {
+        _bottomSheetState.value = !_bottomSheetState.value
+    }
+
+    fun changeActiveSheet(sheet: SheetContent?) {
+        _activeSheet.value = sheet
+    }
 
     fun onTextChange(text: String) {
         _text.value = text.trimStart()
