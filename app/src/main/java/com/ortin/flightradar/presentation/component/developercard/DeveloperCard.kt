@@ -31,8 +31,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ortin.flightradar.presentation.util.clickableWithoutIndication
-import com.ortin.flightradar.ui.theme.Background
 import com.ortin.flightradar.ui.theme.Additional
+import com.ortin.flightradar.ui.theme.Background
 
 @Composable
 fun DeveloperCard(
@@ -83,7 +83,7 @@ fun DeveloperCard(
             style = TextStyle(
                 color = Color.Black,
                 fontSize = 16.sp,
-                fontWeight = FontWeight.W300,
+                fontWeight = FontWeight.Light,
                 fontStyle = FontStyle.Normal,
                 textAlign = TextAlign.Start,
             ),

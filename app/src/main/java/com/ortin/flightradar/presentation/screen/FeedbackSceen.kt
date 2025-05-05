@@ -99,7 +99,7 @@ fun FeedbackScreen(
             textStyle = TextStyle(
                 color = Color.Black,
                 fontSize = 18.sp,
-                fontWeight = FontWeight.W300,
+                fontWeight = FontWeight.Light,
                 fontStyle = FontStyle.Normal,
                 textAlign = TextAlign.Start,
             ),
