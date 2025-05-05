@@ -60,17 +60,17 @@ fun CustomBottomNavBar(
         ) {
             screens.forEach { item: NavigationBarItem ->
                 Column(
+                    modifier = Modifier
+                        .clickableWithoutIndication {
+                            if (item.sheetContent != null) {
+                                onClickFirstAction(item.sheetContent)
+                                onClickSecondAction()
+                            }
+                        },
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Icon(
-                        modifier = Modifier
-                            .clickableWithoutIndication {
-                                if (item.sheetContent != null) {
-                                    onClickFirstAction(item.sheetContent)
-                                    onClickSecondAction()
-                                }
-                            },
                         painter = painterResource(item.icon),
                         contentDescription = item.title,
                         tint = Primary

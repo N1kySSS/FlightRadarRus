@@ -1,6 +1,5 @@
 package com.ortin.flightradar.presentation.screen
 
-import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -13,8 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -36,7 +34,6 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
-import com.ortin.flightradar.MainActivity
 import com.ortin.flightradar.R
 import com.ortin.flightradar.data.bottomsheet.SheetContent
 import com.ortin.flightradar.presentation.component.bottomsheet.FiltersBottomSheet
@@ -112,7 +109,7 @@ fun MapScreen(
         )
     }
 
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val sheetMaxHeight = screenHeight / 2
@@ -259,24 +256,22 @@ fun MapScreen(
     }
     if (bottomSheetState) {
         ModalBottomSheet(
-            onDismissRequest = {
-                viewModel.changeBottomSheetState()
-            },
+            onDismissRequest = { viewModel.changeBottomSheetState() },
             sheetState = sheetState,
-            scrimColor = Color.Transparent
+            scrimColor = Color.Transparent,
         ) {
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .heightIn(max = sheetMaxHeight)
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 when (activeSheet) {
-                    SheetContent.SETTINGS -> SettingsBottomSheet()
-                    SheetContent.WEATHER -> WeatherBottomSheet()
-                    SheetContent.FILTERS -> FiltersBottomSheet()
-                    else -> { /* do nothing */}
+                    SheetContent.SETTINGS -> item { SettingsBottomSheet() }
+                    SheetContent.WEATHER -> item { WeatherBottomSheet() }
+                    SheetContent.FILTERS -> item { FiltersBottomSheet() }
+                    else -> {/* do nothing */
+                    }
                 }
             }
         }
