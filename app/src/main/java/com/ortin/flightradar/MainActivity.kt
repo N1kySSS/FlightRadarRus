@@ -76,7 +76,7 @@ class MainActivity : ComponentActivity(), ActivityCompat.OnRequestPermissionsRes
                                 ) {
                                     CustomTopAppBar(
                                         value = text,
-                                        isSheetVisible = uiState.isSheetVisible,
+                                        isSheetVisible = uiState.isTopSheetVisible,
                                         onIconClick = {
                                             viewModel.showTopSheet()
                                         },
@@ -94,7 +94,7 @@ class MainActivity : ComponentActivity(), ActivityCompat.OnRequestPermissionsRes
                                 ) {
                                     CustomBottomNavBar(
                                         onClickFirstAction = viewModel::changeActiveSheet,
-                                        onClickSecondAction = viewModel::changeBottomSheetState
+                                        onClickSecondAction = viewModel::showBottomSheet
                                     )
                                 }
                             }

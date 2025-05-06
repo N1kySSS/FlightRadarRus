@@ -73,7 +73,6 @@ fun MapScreen(
     val userLocation = viewModel.location.value
     var userLocationLayer: UserLocationLayer? = null
 
-    val bottomSheetState = viewModel.bottomSheetState.value
     val activeSheet = viewModel.activeSheet.value
 
     val uiState = viewModel.mapScreenState.value.uiState
@@ -244,6 +243,7 @@ fun MapScreen(
                 buttons.forEach { item: FlyoutButtonItem ->
                     FlyoutButton(
                         onClick = {
+                            viewModel.changeMapScreenState()
                             navController.navigate(item.route)
                         },
                         title = item.title,
@@ -254,9 +254,9 @@ fun MapScreen(
             }
         }
     }
-    if (bottomSheetState) {
+    if (uiState.isBottomSheetVisible) {
         ModalBottomSheet(
-            onDismissRequest = { viewModel.changeBottomSheetState() },
+            onDismissRequest = { viewModel.showBottomSheet() },
             sheetState = sheetState,
             scrimColor = Color.Transparent,
         ) {

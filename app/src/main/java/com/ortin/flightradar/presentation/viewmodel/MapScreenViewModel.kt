@@ -10,9 +10,6 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class MapScreenViewModel : ViewModel() {
 
-    private val _bottomSheetState = mutableStateOf(false)
-    val bottomSheetState = _bottomSheetState
-
     private val _activeSheet = mutableStateOf<SheetContent?>(null)
     val activeSheet: State<SheetContent?> = _activeSheet
 
@@ -25,8 +22,11 @@ class MapScreenViewModel : ViewModel() {
     private val _mapScreenState = mutableStateOf<MapScreenState>(MapScreenState.Default)
     val mapScreenState: State<MapScreenState> = _mapScreenState
 
-    fun changeBottomSheetState() {
-        _bottomSheetState.value = !_bottomSheetState.value
+    fun showBottomSheet() {
+        _mapScreenState.value = when (_mapScreenState.value) {
+            is MapScreenState.BottomSheetVisible -> MapScreenState.Default
+            else -> MapScreenState.BottomSheetVisible
+        }
     }
 
     fun changeActiveSheet(sheet: SheetContent?) {
@@ -44,9 +44,7 @@ class MapScreenViewModel : ViewModel() {
     fun changeMapScreenState() {
         _mapScreenState.value = when (_mapScreenState.value) {
             is MapScreenState.Default -> MapScreenState.Hidden
-            is MapScreenState.Hidden -> MapScreenState.Default
-            is MapScreenState.TopSheetVisible -> MapScreenState.Default
-            is MapScreenState.FlyoutButtonVisible -> MapScreenState.Default
+            else -> MapScreenState.Default
         }
     }
 
@@ -70,43 +68,58 @@ sealed class MapScreenState(val uiState: UiState) {
     data object Default : MapScreenState(
         UiState(
             isInterfaceVisible = true,
-            isSheetVisible = false,
+            isTopSheetVisible = false,
             isSideButtonsVisible = true,
-            isBackgroundDark = false
+            isBackgroundDark = false,
+            isBottomSheetVisible = false
         )
     )
 
     data object Hidden : MapScreenState(
         UiState(
             isInterfaceVisible = false,
-            isSheetVisible = false,
+            isTopSheetVisible = false,
             isSideButtonsVisible = false,
-            isBackgroundDark = false
+            isBackgroundDark = false,
+            isBottomSheetVisible = false
         )
     )
 
     data object TopSheetVisible : MapScreenState(
         UiState(
             isInterfaceVisible = true,
-            isSheetVisible = true,
+            isTopSheetVisible = true,
             isSideButtonsVisible = false,
-            isBackgroundDark = false
+            isBackgroundDark = false,
+            isBottomSheetVisible = false
+        )
+    )
+
+    data object BottomSheetVisible : MapScreenState(
+        UiState(
+            isInterfaceVisible = true,
+            isTopSheetVisible = false,
+            isSideButtonsVisible = true,
+            isBackgroundDark = false,
+            isBottomSheetVisible = true
         )
     )
 
     data object FlyoutButtonVisible : MapScreenState(
         UiState(
             isInterfaceVisible = true,
-            isSheetVisible = false,
+            isTopSheetVisible = false,
             isSideButtonsVisible = true,
-            isBackgroundDark = true
+            isBackgroundDark = true,
+            isBottomSheetVisible = false
         )
     )
 }
 
 data class UiState(
     val isInterfaceVisible: Boolean,
-    val isSheetVisible: Boolean,
+    val isTopSheetVisible: Boolean,
     val isSideButtonsVisible: Boolean,
-    val isBackgroundDark: Boolean
+    val isBackgroundDark: Boolean,
+    val isBottomSheetVisible: Boolean
 )
