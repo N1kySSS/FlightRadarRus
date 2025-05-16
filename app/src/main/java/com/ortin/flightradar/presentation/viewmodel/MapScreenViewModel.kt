@@ -12,18 +12,18 @@ import kotlinx.coroutines.flow.asStateFlow
 class MapScreenViewModel : ViewModel() {
 
     val mapTypes = listOf(
-        R.drawable.normal to "Стандартный",
-        R.drawable.satellite to "Спутник",
-        R.drawable.hybrid to "Гибрид"
+        R.drawable.map_type_none to "Нет",
+        R.drawable.map_type_normal to "Стандартный",
+        R.drawable.map_type_vector to "Векторный"
     )
 
     private val _selectedMapType = mutableStateOf<String?>(mapTypes[0].second)
     val selectedMapType = _selectedMapType
 
     val markTypes = listOf(
-        R.drawable.off_mark_state to "Выкл.",
-        R.drawable.logo_mark_state to "Логотип",
-        R.drawable.text_mark_state to "Текст"
+        R.drawable.mark_state_off to "Выкл.",
+        R.drawable.mark_state_logo to "Логотип",
+        R.drawable.mark_state_text to "Текст"
     )
 
     private val _selectedMarkType = mutableStateOf<String?>(markTypes[0].second)

@@ -86,7 +86,7 @@ fun SettingsBottomSheet(viewModel: MapScreenViewModel) {
                         .clip(RoundedCornerShape(4.dp))
                         .align(Alignment.Center),
                     painter = painterResource(drawable),
-                    contentScale = ContentScale.FillBounds,
+                    contentScale = ContentScale.Crop,
                     alignment = Alignment.Center,
                     contentDescription = "Вид карты - $type"
                 )
@@ -149,7 +149,7 @@ fun SettingsBottomSheet(viewModel: MapScreenViewModel) {
                     }
                     .border(
                         width = 3.dp,
-                        color = if (isSelected) Color.Yellow else Color.Transparent,
+                        color = if (isSelected) Selected else Color.Transparent,
                         shape = RoundedCornerShape(4.dp)
                     )
             ) {
@@ -217,7 +217,7 @@ fun SettingsBottomSheet(viewModel: MapScreenViewModel) {
                 }
                 .border(
                     width = 3.dp,
-                    color = if (isAirportsVisible) Color.Yellow else Color.Transparent,
+                    color = if (isAirportsVisible) Selected else Color.Transparent,
                     shape = RoundedCornerShape(4.dp)
                 )
         ) {
@@ -302,7 +302,7 @@ fun SettingsBottomSheet(viewModel: MapScreenViewModel) {
                 }
                 .border(
                     width = 3.dp,
-                    color = if (isMyLocationVisible) Color.Yellow else Color.Transparent,
+                    color = if (isMyLocationVisible) Selected else Color.Transparent,
                     shape = RoundedCornerShape(4.dp)
                 )
         ) {

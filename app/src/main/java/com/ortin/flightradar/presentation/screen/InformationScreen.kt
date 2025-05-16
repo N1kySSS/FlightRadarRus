@@ -51,12 +51,12 @@ fun InformationScreen(
                 horizontal = 10.dp,
                 vertical = 16.dp
             ),
-            imageId = R.drawable.icon_n,
+            imageId = R.drawable.icon_github_n,
             text = "Mobile developer: https://github.com/N1kySSS"
         )
         DeveloperCard(
             modifier = Modifier.padding(horizontal = 10.dp),
-            imageId = R.drawable.icon_d,
+            imageId = R.drawable.icon_github_d,
             text = "Backend developer: https://github.com/dmitrygortex"
         )
         DeveloperCard(
@@ -64,7 +64,7 @@ fun InformationScreen(
                 horizontal = 10.dp,
                 vertical = 16.dp
             ),
-            imageId = R.drawable.icon_m,
+            imageId = R.drawable.icon_github_m,
             text = "Frontend developer: https://github.com/MatveyJI"
         )
     }
