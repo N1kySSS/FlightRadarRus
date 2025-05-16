@@ -108,8 +108,8 @@ fun MapScreen(
     val cameraPosition = remember {
         mutableStateOf(
             CameraPosition(
-                Point(55.699402, 37.625485),
-                17.0f,
+                Point(55.7622, 37.6156),
+                11.0f,
                 0f,
                 0f
             )
