@@ -18,6 +18,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -71,7 +72,14 @@ fun MapScreen(
     val activity = context as ViewModelStoreOwner
     val viewModel: MapScreenViewModel = koinViewModel(viewModelStoreOwner = activity)
     val userLocation = viewModel.location.value
-    var userLocationLayer: UserLocationLayer? = null
+    val userLocationLayer = remember(mapView) {
+        MapKitFactory.getInstance().createUserLocationLayer(mapView.mapWindow).apply {
+            isHeadingEnabled = true
+        }
+    }
+
+    val isAirportsVisible by viewModel.isAirportsVisible
+    val isMyLocationVisible by viewModel.isMyLocationVisible
 
     val activeSheet = viewModel.activeSheet.value
 
@@ -117,28 +125,21 @@ fun MapScreen(
      * Это замоканные данные об аэропортах Москвы,
      * в дальнейшем, они будут получены с бэкенда
      **/
-    val pinsCollection = mapView.mapWindow.map.mapObjects.addCollection()
+    val pinsCollection = remember(mapView) { mapView.mapWindow.map.mapObjects.addCollection() }
     val points = listOf(
-        Point(55.9761317, 37.410052) to "Шереметьево",
-        Point(55.605787, 37.277518) to "Внуково",
-        Point(55.50773, 37.50635) to "Остафьево",
-        Point(55.406111, 37.908056) to "Домодедово",
-        Point(55.561365, 38.137674) to "Жуковский",
+        Point(55.9761317, 37.410052),
+        Point(55.605787, 37.277518),
+        Point(55.50773, 37.50635),
+        Point(55.406111, 37.908056),
+        Point(55.561365, 38.137674)
     )
 
     val imageProvider = ImageProvider.fromResource(context, R.drawable.location_on)
 
     points.forEach { point ->
         pinsCollection.addPlacemark().apply {
-            geometry = point.first
+            geometry = point
             setIcon(imageProvider)
-            setText(
-                point.second,
-                TextStyle().apply {
-                    size = 10f
-                    placement = TextStyle.Placement.BOTTOM
-                },
-            )
         }
     }
 
@@ -154,6 +155,14 @@ fun MapScreen(
         }
     }
 
+    LaunchedEffect(isAirportsVisible) {
+        pinsCollection.isVisible = isAirportsVisible
+    }
+
+    LaunchedEffect(isMyLocationVisible) {
+        userLocationLayer.isVisible = viewModel.isMyLocationVisible.value
+    }
+
     DisposableEffect(lifecycleOwner) {
         mapView.mapWindow.map.addInputListener(inputListener)
         mapView.mapWindow.map.move(
@@ -166,15 +175,6 @@ fun MapScreen(
             if (event == Lifecycle.Event.ON_START) {
                 MapKitFactory.getInstance().onStart()
                 mapView.onStart()
-
-                if (userLocationLayer == null) {
-                    userLocationLayer =
-                        MapKitFactory.getInstance().createUserLocationLayer(mapView.mapWindow)
-                            .apply {
-                                isVisible = true
-                                isHeadingEnabled = true
-                            }
-                }
             } else if (event == Lifecycle.Event.ON_STOP) {
                 mapView.onStop()
                 MapKitFactory.getInstance().onStop()
@@ -267,7 +267,7 @@ fun MapScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 when (activeSheet) {
-                    SheetContent.SETTINGS -> item { SettingsBottomSheet() }
+                    SheetContent.SETTINGS -> item { SettingsBottomSheet(viewModel) }
                     SheetContent.WEATHER -> item { WeatherBottomSheet() }
                     SheetContent.FILTERS -> item { FiltersBottomSheet() }
                     else -> {/* do nothing */

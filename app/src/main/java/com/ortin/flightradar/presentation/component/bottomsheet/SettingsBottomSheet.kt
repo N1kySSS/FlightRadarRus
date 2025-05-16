@@ -2,6 +2,7 @@ package com.ortin.flightradar.presentation.component.bottomsheet
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,17 +29,22 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ortin.flightradar.R
+import com.ortin.flightradar.presentation.util.clickableWithoutIndication
+import com.ortin.flightradar.presentation.viewmodel.MapScreenViewModel
+import com.ortin.flightradar.ui.theme.Selected
 
 @Composable
-fun SettingsBottomSheet() {
-    /**
-     * Image's border color and text on image background color
-     * will be changed later, based on the state
-     **/
+fun SettingsBottomSheet(viewModel: MapScreenViewModel) {
+    val selectedMapType by viewModel.selectedMapType
+    val selectedMarkType by viewModel.selectedMarkType
+    val isAirportsVisible by viewModel.isAirportsVisible
+    val isMyLocationVisible by viewModel.isMyLocationVisible
+    val mapTypes = viewModel.mapTypes
+    val markTypes = viewModel.markTypes
+
     Text(
         text = "ТИП КАРТЫ",
         style = TextStyle(
@@ -54,107 +63,54 @@ fun SettingsBottomSheet() {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround
     ) {
-        Box(modifier = Modifier.wrapContentSize()) {
-            Image(
+        mapTypes.forEach { (drawable, type) ->
+            val isSelected = selectedMapType.equals(type)
+
+            Box(
                 modifier = Modifier
-                    .size(125.dp)
-                    .clip(RoundedCornerShape(4.dp))
-                    .align(Alignment.Center),
-                painter = painterResource(R.drawable.normal),
-                contentScale = ContentScale.FillBounds,
-                alignment = Alignment.Center,
-                contentDescription = "Normal map view"
-            )
-            Text(
-                modifier = Modifier
-                    .width(125.dp)
-                    .align(Alignment.BottomCenter)
-                    .background(
-                        color = Color.Gray.copy(alpha = 0.65f),
-                        shape = RoundedCornerShape(
-                            topStart = 0.dp,
-                            topEnd = 0.dp,
-                            bottomStart = 4.dp,
-                            bottomEnd = 4.dp
-                        )
+                    .wrapContentSize()
+                    .clickableWithoutIndication {
+                        if (!isSelected) {
+                            viewModel.onMapTypeClicked(type)
+                        }
+                    }
+                    .border(
+                        width = 2.dp,
+                        color = if (isSelected) Selected else Color.Transparent,
+                        shape = RoundedCornerShape(4.dp)
+                    )
+            ) {
+                Image(
+                    modifier = Modifier
+                        .size(125.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .align(Alignment.Center),
+                    painter = painterResource(drawable),
+                    contentScale = ContentScale.FillBounds,
+                    alignment = Alignment.Center,
+                    contentDescription = "Вид карты - $type"
+                )
+                Text(
+                    modifier = Modifier
+                        .width(125.dp)
+                        .align(Alignment.BottomCenter)
+                        .background(
+                            color = if (isSelected) Selected else Color.Gray.copy(alpha = 0.65f),
+                            shape = RoundedCornerShape(
+                                bottomStart = 4.dp,
+                                bottomEnd = 4.dp
+                            )
+                        ),
+                    text = type,
+                    style = TextStyle(
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        fontStyle = FontStyle.Normal,
+                        textAlign = TextAlign.Center,
                     ),
-                text = "Стандартный",
-                style = TextStyle(
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontStyle = FontStyle.Normal,
-                    textAlign = TextAlign.Center,
-                ),
-            )
-        }
-        Box(modifier = Modifier.wrapContentSize()) {
-            Image(
-                modifier = Modifier
-                    .size(125.dp)
-                    .clip(RoundedCornerShape(4.dp))
-                    .align(Alignment.Center),
-                painter = painterResource(R.drawable.satellite),
-                contentScale = ContentScale.FillBounds,
-                alignment = Alignment.Center,
-                contentDescription = "Satellite map view"
-            )
-            Text(
-                modifier = Modifier
-                    .width(125.dp)
-                    .align(Alignment.BottomCenter)
-                    .background(
-                        color = Color.Gray.copy(alpha = 0.65f),
-                        shape = RoundedCornerShape(
-                            topStart = 0.dp,
-                            topEnd = 0.dp,
-                            bottomStart = 4.dp,
-                            bottomEnd = 4.dp
-                        )
-                    ),
-                text = "Спутник",
-                style = TextStyle(
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontStyle = FontStyle.Normal,
-                    textAlign = TextAlign.Center,
-                ),
-            )
-        }
-        Box(modifier = Modifier.wrapContentSize()) {
-            Image(
-                modifier = Modifier
-                    .size(125.dp)
-                    .clip(RoundedCornerShape(4.dp))
-                    .align(Alignment.Center),
-                painter = painterResource(R.drawable.hybrid),
-                contentScale = ContentScale.FillBounds,
-                alignment = Alignment.Center,
-                contentDescription = "Hybrid map view"
-            )
-            Text(
-                modifier = Modifier
-                    .width(125.dp)
-                    .align(Alignment.BottomCenter)
-                    .background(
-                        color = Color.Gray.copy(alpha = 0.65f),
-                        shape = RoundedCornerShape(
-                            topStart = 0.dp,
-                            topEnd = 0.dp,
-                            bottomStart = 4.dp,
-                            bottomEnd = 4.dp
-                        )
-                    ),
-                text = "Гибрид",
-                style = TextStyle(
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontStyle = FontStyle.Normal,
-                    textAlign = TextAlign.Center,
-                ),
-            )
+                )
+            }
         }
     }
     HorizontalDivider(
@@ -180,107 +136,53 @@ fun SettingsBottomSheet() {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround
     ) {
-        Box(modifier = Modifier.wrapContentSize()) {
-            Image(
+        markTypes.forEach { (drawable, type) ->
+            val isSelected = selectedMarkType.equals(type)
+
+            Box(
                 modifier = Modifier
-                    .size(125.dp)
-                    .clip(RoundedCornerShape(4.dp))
-                    .align(Alignment.Center),
-                painter = painterResource(R.drawable.off_mark_state),
-                contentScale = ContentScale.FillBounds,
-                alignment = Alignment.Center,
-                contentDescription = "Off marks"
-            )
-            Text(
-                modifier = Modifier
-                    .width(125.dp)
-                    .align(Alignment.BottomCenter)
-                    .background(
-                        color = Color.Gray.copy(alpha = 0.65f),
-                        shape = RoundedCornerShape(
-                            topStart = 0.dp,
-                            topEnd = 0.dp,
-                            bottomStart = 4.dp,
-                            bottomEnd = 4.dp
-                        )
+                    .wrapContentSize()
+                    .clickableWithoutIndication {
+                        if (!isSelected) {
+                            viewModel.onMarkTypeClicked(type)
+                        }
+                    }
+                    .border(
+                        width = 3.dp,
+                        color = if (isSelected) Color.Yellow else Color.Transparent,
+                        shape = RoundedCornerShape(4.dp)
+                    )
+            ) {
+                Image(
+                    modifier = Modifier
+                        .size(125.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .align(Alignment.Center),
+                    painter = painterResource(drawable),
+                    contentScale = ContentScale.FillBounds,
+                    alignment = Alignment.Center,
+                    contentDescription = "Метка - $type"
+                )
+                Text(
+                    modifier = Modifier
+                        .width(125.dp)
+                        .align(Alignment.BottomCenter)
+                        .background(
+                            color = if (isSelected) Selected else Color.Gray.copy(alpha = 0.65f),
+                            shape = RoundedCornerShape(
+                                bottomStart = 4.dp,
+                                bottomEnd = 4.dp
+                            )
+                        ),
+                    text = type,
+                    style = TextStyle(
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
                     ),
-                text = "Выкл.", // TODO - change later based on state
-                style = TextStyle(
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontStyle = FontStyle.Normal,
-                    textAlign = TextAlign.Center,
-                ),
-            )
-        }
-        Box(modifier = Modifier.wrapContentSize()) {
-            Image(
-                modifier = Modifier
-                    .size(125.dp)
-                    .clip(RoundedCornerShape(4.dp))
-                    .align(Alignment.Center),
-                painter = painterResource(R.drawable.logo_mark_state),
-                contentScale = ContentScale.FillBounds,
-                alignment = Alignment.Center,
-                contentDescription = "Show company logo"
-            )
-            Text(
-                modifier = Modifier
-                    .width(125.dp)
-                    .align(Alignment.BottomCenter)
-                    .background(
-                        color = Color.Gray.copy(alpha = 0.65f),
-                        shape = RoundedCornerShape(
-                            topStart = 0.dp,
-                            topEnd = 0.dp,
-                            bottomStart = 4.dp,
-                            bottomEnd = 4.dp
-                        )
-                    ),
-                text = "Логотип",
-                style = TextStyle(
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontStyle = FontStyle.Normal,
-                    textAlign = TextAlign.Center,
-                ),
-            )
-        }
-        Box(modifier = Modifier.wrapContentSize()) {
-            Image(
-                modifier = Modifier
-                    .size(125.dp)
-                    .clip(RoundedCornerShape(4.dp))
-                    .align(Alignment.Center),
-                painter = painterResource(R.drawable.text_mark_state),
-                contentScale = ContentScale.FillBounds,
-                alignment = Alignment.Center,
-                contentDescription = "Show text"
-            )
-            Text(
-                modifier = Modifier
-                    .width(125.dp)
-                    .align(Alignment.BottomCenter)
-                    .background(
-                        color = Color.Gray.copy(alpha = 0.65f),
-                        shape = RoundedCornerShape(
-                            topStart = 0.dp,
-                            topEnd = 0.dp,
-                            bottomStart = 4.dp,
-                            bottomEnd = 4.dp
-                        )
-                    ),
-                text = "Текст",
-                style = TextStyle(
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontStyle = FontStyle.Normal,
-                    textAlign = TextAlign.Center,
-                ),
-            )
+                )
+            }
         }
     }
     HorizontalDivider(
@@ -310,6 +212,14 @@ fun SettingsBottomSheet() {
             modifier = Modifier
                 .padding(horizontal = 10.dp)
                 .wrapContentSize()
+                .clickableWithoutIndication {
+                    viewModel.onAirportVisibleSettingsClicked()
+                }
+                .border(
+                    width = 3.dp,
+                    color = if (isAirportsVisible) Color.Yellow else Color.Transparent,
+                    shape = RoundedCornerShape(4.dp)
+                )
         ) {
             Image(
                 modifier = Modifier
@@ -326,7 +236,7 @@ fun SettingsBottomSheet() {
                     .width(200.dp)
                     .align(Alignment.BottomCenter)
                     .background(
-                        color = Color.Gray.copy(alpha = 0.65f),
+                        color = if (isAirportsVisible) Selected else Color.Gray.copy(alpha = 0.65f),
                         shape = RoundedCornerShape(
                             topStart = 0.dp,
                             topEnd = 0.dp,
@@ -334,7 +244,7 @@ fun SettingsBottomSheet() {
                             bottomEnd = 4.dp
                         )
                     ),
-                text = "Выкл.", // TODO - change later based on state
+                text = if (isAirportsVisible) "Вкл." else "Выкл.",
                 style = TextStyle(
                     color = Color.White,
                     fontSize = 16.sp,
@@ -387,6 +297,14 @@ fun SettingsBottomSheet() {
             modifier = Modifier
                 .padding(horizontal = 10.dp)
                 .wrapContentSize()
+                .clickableWithoutIndication {
+                    viewModel.onMyLocationVisibleSettingsClicked()
+                }
+                .border(
+                    width = 3.dp,
+                    color = if (isMyLocationVisible) Color.Yellow else Color.Transparent,
+                    shape = RoundedCornerShape(4.dp)
+                )
         ) {
             Image(
                 modifier = Modifier
@@ -403,7 +321,7 @@ fun SettingsBottomSheet() {
                     .width(200.dp)
                     .align(Alignment.BottomCenter)
                     .background(
-                        color = Color.Gray.copy(alpha = 0.65f),
+                        color = if (isMyLocationVisible) Selected else Color.Gray.copy(alpha = 0.65f),
                         shape = RoundedCornerShape(
                             topStart = 0.dp,
                             topEnd = 0.dp,
@@ -411,7 +329,7 @@ fun SettingsBottomSheet() {
                             bottomEnd = 4.dp
                         )
                     ),
-                text = "Выкл.", // TODO - change later based on state
+                text = if (isMyLocationVisible) "Вкл." else "Выкл.",
                 style = TextStyle(
                     color = Color.White,
                     fontSize = 16.sp,
@@ -436,10 +354,4 @@ fun SettingsBottomSheet() {
             ),
         )
     }
-}
-
-@Preview
-@Composable
-fun SettingsBottomSheetPreview() {
-    SettingsBottomSheet()
 }
