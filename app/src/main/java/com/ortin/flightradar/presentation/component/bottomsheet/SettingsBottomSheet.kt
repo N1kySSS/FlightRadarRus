@@ -42,6 +42,7 @@ fun SettingsBottomSheet(viewModel: MapScreenViewModel) {
     val selectedMarkType by viewModel.selectedMarkType
     val isAirportsVisible by viewModel.isAirportsVisible
     val isMyLocationVisible by viewModel.isMyLocationVisible
+
     val mapTypes = viewModel.mapTypes
     val markTypes = viewModel.markTypes
 

@@ -53,9 +53,7 @@ import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.InputListener
 import com.yandex.mapkit.map.Map
-import com.yandex.mapkit.map.TextStyle
 import com.yandex.mapkit.mapview.MapView
-import com.yandex.mapkit.user_location.UserLocationLayer
 import com.yandex.runtime.image.ImageProvider
 import org.koin.androidx.compose.koinViewModel
 
@@ -268,7 +266,7 @@ fun MapScreen(
             ) {
                 when (activeSheet) {
                     SheetContent.SETTINGS -> item { SettingsBottomSheet(viewModel) }
-                    SheetContent.WEATHER -> item { WeatherBottomSheet() }
+                    SheetContent.WEATHER -> item { WeatherBottomSheet(viewModel) }
                     SheetContent.FILTERS -> item { FiltersBottomSheet() }
                     else -> {/* do nothing */
                     }

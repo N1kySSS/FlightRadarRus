@@ -2,6 +2,7 @@ package com.ortin.flightradar.presentation.component.bottomsheet
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,9 +30,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ortin.flightradar.R
+import com.ortin.flightradar.presentation.util.clickableWithoutIndication
+import com.ortin.flightradar.presentation.viewmodel.MapScreenViewModel
+import com.ortin.flightradar.ui.theme.Selected
 
 @Composable
-fun WeatherBottomSheet() {
+fun WeatherBottomSheet(viewModel: MapScreenViewModel) {
+    val isCloudCoverDisplay by viewModel.isCloudCoverDisplay
+    val isCurrentWeatherDisplay by viewModel.isCurrentWeatherDisplay
+    val isTotalPrecipitationDisplay by viewModel.isTotalPrecipitationDisplay
+    val isPrecipitationIntensityDisplay by viewModel.isPrecipitationIntensityDisplay
+
     Text(
         modifier = Modifier.padding(top = 20.dp),
         text = "АКТАУЛЬНАЯ ПОГОДА",
@@ -54,6 +64,14 @@ fun WeatherBottomSheet() {
             modifier = Modifier
                 .padding(horizontal = 10.dp)
                 .wrapContentSize()
+                .clickableWithoutIndication {
+                    viewModel.onCurrentWeatherClicked()
+                }
+                .border(
+                    width = 3.dp,
+                    color = if (isCurrentWeatherDisplay) Selected else Color.Transparent,
+                    shape = RoundedCornerShape(4.dp)
+                )
         ) {
             Image(
                 modifier = Modifier
@@ -70,7 +88,7 @@ fun WeatherBottomSheet() {
                     .width(200.dp)
                     .align(Alignment.BottomCenter)
                     .background(
-                        color = Color.Gray.copy(alpha = 0.65f),
+                        color = if (isCurrentWeatherDisplay) Selected else Color.Gray.copy(alpha = 0.65f),
                         shape = RoundedCornerShape(
                             topStart = 0.dp,
                             topEnd = 0.dp,
@@ -78,7 +96,7 @@ fun WeatherBottomSheet() {
                             bottomEnd = 4.dp
                         )
                     ),
-                text = "Выкл.", // TODO - change later based on state
+                text = if (isCurrentWeatherDisplay) "Вкл." else "Выкл.",
                 style = TextStyle(
                     color = Color.White,
                     fontSize = 16.sp,
@@ -130,6 +148,14 @@ fun WeatherBottomSheet() {
             modifier = Modifier
                 .padding(horizontal = 10.dp)
                 .wrapContentSize()
+                .clickableWithoutIndication {
+                    viewModel.onCloudCoverClicked()
+                }
+                .border(
+                    width = 3.dp,
+                    color = if (isCloudCoverDisplay) Selected else Color.Transparent,
+                    shape = RoundedCornerShape(4.dp)
+                )
         ) {
             Image(
                 modifier = Modifier
@@ -146,7 +172,7 @@ fun WeatherBottomSheet() {
                     .width(200.dp)
                     .align(Alignment.BottomCenter)
                     .background(
-                        color = Color.Gray.copy(alpha = 0.65f),
+                        color = if (isCloudCoverDisplay) Selected else Color.Gray.copy(alpha = 0.65f),
                         shape = RoundedCornerShape(
                             topStart = 0.dp,
                             topEnd = 0.dp,
@@ -154,7 +180,7 @@ fun WeatherBottomSheet() {
                             bottomEnd = 4.dp
                         )
                     ),
-                text = "Выкл.", // TODO - change later based on state
+                text = if (isCloudCoverDisplay) "Вкл." else "Выкл.",
                 style = TextStyle(
                     color = Color.White,
                     fontSize = 16.sp,
@@ -206,6 +232,14 @@ fun WeatherBottomSheet() {
             modifier = Modifier
                 .padding(horizontal = 10.dp)
                 .wrapContentSize()
+                .clickableWithoutIndication {
+                    viewModel.onTotalPrecipitationClicked()
+                }
+                .border(
+                    width = 3.dp,
+                    color = if (isTotalPrecipitationDisplay) Selected else Color.Transparent,
+                    shape = RoundedCornerShape(4.dp)
+                )
         ) {
             Image(
                 modifier = Modifier
@@ -222,7 +256,7 @@ fun WeatherBottomSheet() {
                     .width(200.dp)
                     .align(Alignment.BottomCenter)
                     .background(
-                        color = Color.Gray.copy(alpha = 0.65f),
+                        color = if (isTotalPrecipitationDisplay) Selected else Color.Gray.copy(alpha = 0.65f),
                         shape = RoundedCornerShape(
                             topStart = 0.dp,
                             topEnd = 0.dp,
@@ -230,7 +264,7 @@ fun WeatherBottomSheet() {
                             bottomEnd = 4.dp
                         )
                     ),
-                text = "Выкл.", // TODO - change later based on state
+                text = if (isTotalPrecipitationDisplay) "Вкл." else "Выкл.",
                 style = TextStyle(
                     color = Color.White,
                     fontSize = 16.sp,
@@ -282,6 +316,14 @@ fun WeatherBottomSheet() {
             modifier = Modifier
                 .padding(horizontal = 10.dp)
                 .wrapContentSize()
+                .clickableWithoutIndication {
+                    viewModel.onPrecipitationIntensityClicked()
+                }
+                .border(
+                    width = 3.dp,
+                    color = if (isPrecipitationIntensityDisplay) Selected else Color.Transparent,
+                    shape = RoundedCornerShape(4.dp)
+                )
         ) {
             Image(
                 modifier = Modifier
@@ -298,7 +340,7 @@ fun WeatherBottomSheet() {
                     .width(200.dp)
                     .align(Alignment.BottomCenter)
                     .background(
-                        color = Color.Gray.copy(alpha = 0.65f),
+                        color = if (isPrecipitationIntensityDisplay) Selected else Color.Gray.copy(alpha = 0.65f),
                         shape = RoundedCornerShape(
                             topStart = 0.dp,
                             topEnd = 0.dp,
@@ -306,7 +348,7 @@ fun WeatherBottomSheet() {
                             bottomEnd = 4.dp
                         )
                     ),
-                text = "Выкл.", // TODO - change later based on state
+                text = if (isPrecipitationIntensityDisplay) "Вкл." else "Выкл.",
                 style = TextStyle(
                     color = Color.White,
                     fontSize = 16.sp,

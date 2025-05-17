@@ -35,6 +35,34 @@ class MapScreenViewModel : ViewModel() {
     private val _isMyLocationVisible = mutableStateOf(true)
     val isMyLocationVisible = _isMyLocationVisible
 
+    private val _isCurrentWeatherDisplay = mutableStateOf(false)
+    val isCurrentWeatherDisplay = _isCurrentWeatherDisplay
+
+    private val _isCloudCoverDisplay = mutableStateOf(false)
+    val isCloudCoverDisplay = _isCloudCoverDisplay
+
+    private val _isTotalPrecipitationDisplay = mutableStateOf(false)
+    val isTotalPrecipitationDisplay = _isTotalPrecipitationDisplay
+
+    private val _isPrecipitationIntensityDisplay = mutableStateOf(false)
+    val isPrecipitationIntensityDisplay = _isPrecipitationIntensityDisplay
+
+    fun onCurrentWeatherClicked() {
+        _isCurrentWeatherDisplay.value = !_isCurrentWeatherDisplay.value
+    }
+
+    fun onCloudCoverClicked() {
+        _isCloudCoverDisplay.value = !_isCloudCoverDisplay.value
+    }
+
+    fun onTotalPrecipitationClicked() {
+        _isTotalPrecipitationDisplay.value = !_isTotalPrecipitationDisplay.value
+    }
+
+    fun onPrecipitationIntensityClicked() {
+        _isPrecipitationIntensityDisplay.value = !_isPrecipitationIntensityDisplay.value
+    }
+
     fun onMapTypeClicked(type: String) {
         _selectedMapType.value = type
     }
