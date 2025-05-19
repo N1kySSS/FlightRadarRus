@@ -1,5 +1,6 @@
 package com.ortin.flightradar.presentation.screen
 
+import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -53,6 +54,7 @@ import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.InputListener
 import com.yandex.mapkit.map.Map
+import com.yandex.mapkit.map.MapType
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.image.ImageProvider
 import org.koin.androidx.compose.koinViewModel
@@ -78,6 +80,7 @@ fun MapScreen(
 
     val isAirportsVisible by viewModel.isAirportsVisible
     val isMyLocationVisible by viewModel.isMyLocationVisible
+    val activeMapType by viewModel.activeMapType
 
     val activeSheet = viewModel.activeSheet.value
 
@@ -159,6 +162,10 @@ fun MapScreen(
 
     LaunchedEffect(isMyLocationVisible) {
         userLocationLayer.isVisible = viewModel.isMyLocationVisible.value
+    }
+
+    LaunchedEffect(activeMapType) {
+        mapView.mapWindow.map.mapType = activeMapType
     }
 
     DisposableEffect(lifecycleOwner) {

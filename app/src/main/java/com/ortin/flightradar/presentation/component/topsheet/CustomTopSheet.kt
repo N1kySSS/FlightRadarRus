@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -224,10 +225,12 @@ fun CustomTopSheet(isVisible: Boolean) {
                     ),
                 )
                 Image(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1338f / 964f)
+                        .align(Alignment.CenterHorizontally),
                     painter = painterResource(R.drawable.preview_image),
-                    contentScale = ContentScale.FillBounds,
-                    alignment = Alignment.Center,
+                    contentScale = ContentScale.Crop,
                     contentDescription = "Image add favourite preview"
                 )
                 Text(

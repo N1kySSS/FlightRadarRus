@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.ortin.flightradar.R
 import com.ortin.flightradar.data.bottomsheet.SheetContent
 import com.ortin.flightradar.data.location.LocationData
+import com.yandex.mapkit.map.MapType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
@@ -17,7 +18,7 @@ class MapScreenViewModel : ViewModel() {
         R.drawable.map_type_vector to "Векторный"
     )
 
-    private val _selectedMapType = mutableStateOf<String?>(mapTypes[0].second)
+    private val _selectedMapType = mutableStateOf(mapTypes[1].second)
     val selectedMapType = _selectedMapType
 
     val markTypes = listOf(
@@ -28,6 +29,15 @@ class MapScreenViewModel : ViewModel() {
 
     private val _selectedMarkType = mutableStateOf<String?>(markTypes[0].second)
     val selectedMarkType = _selectedMarkType
+
+    private val mapTypeYandex = mapOf(
+        "Нет" to MapType.NONE,
+        "Стандартный" to MapType.MAP,
+        "Векторный" to MapType.VECTOR_MAP
+    )
+
+    private val _activeMapType = mutableStateOf(MapType.MAP)
+    val activeMapType = _activeMapType
 
     private val _isAirportsVisible = mutableStateOf(true)
     val isAirportsVisible = _isAirportsVisible
@@ -65,10 +75,15 @@ class MapScreenViewModel : ViewModel() {
 
     fun onMapTypeClicked(type: String) {
         _selectedMapType.value = type
+        onMapTypeSelected()
     }
 
     fun onMarkTypeClicked(type: String) {
         _selectedMarkType.value = type
+    }
+
+    private fun onMapTypeSelected() {
+        _activeMapType.value = mapTypeYandex[_selectedMapType.value] ?: MapType.MAP
     }
 
     fun onAirportVisibleSettingsClicked() {
