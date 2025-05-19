@@ -75,15 +75,11 @@ class MapScreenViewModel : ViewModel() {
 
     fun onMapTypeClicked(type: String) {
         _selectedMapType.value = type
-        onMapTypeSelected()
+        _activeMapType.value = mapTypeYandex[_selectedMapType.value] ?: MapType.MAP
     }
 
     fun onMarkTypeClicked(type: String) {
         _selectedMarkType.value = type
-    }
-
-    private fun onMapTypeSelected() {
-        _activeMapType.value = mapTypeYandex[_selectedMapType.value] ?: MapType.MAP
     }
 
     fun onAirportVisibleSettingsClicked() {
