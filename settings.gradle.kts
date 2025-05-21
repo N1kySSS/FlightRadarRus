@@ -17,6 +17,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven { url = uri("https://storage.yandexcloud.net/yandex-maps-sdk-maven") }
+        maven { url = uri("https://jitpack.io") }
     }
 }
 

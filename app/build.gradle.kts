@@ -100,4 +100,6 @@ dependencies {
     implementation(libs.jakarta.activation)
 
     implementation(libs.androidx.navigation.compose)
+
+    implementation("com.github.austin17ng:Austin_SegmentedControl:2.0.0")
 }

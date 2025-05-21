@@ -17,6 +17,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,6 +36,10 @@ import com.ortin.flightradar.R
 import com.ortin.flightradar.presentation.util.clickableWithoutIndication
 import com.ortin.flightradar.presentation.viewmodel.MapScreenViewModel
 import com.ortin.flightradar.ui.theme.Selected
+import me.austinng.austinsegmentedcontrol.ItemWidthMode
+import me.austinng.austinsegmentedcontrol.SegmentedControl
+import me.austinng.austinsegmentedcontrol.SegmentedControlItem
+import me.austinng.austinsegmentedcontrol.SegmentedControlPropertiesDefault
 
 @Composable
 fun SettingsBottomSheet(viewModel: MapScreenViewModel) {
@@ -43,6 +50,28 @@ fun SettingsBottomSheet(viewModel: MapScreenViewModel) {
 
     val mapTypes = viewModel.mapTypes
     val markTypes = viewModel.markTypes
+
+    /* TODO _ move to viewModel */
+    var verticalSpeedIndex by remember { mutableIntStateOf(1) }
+    var planeSpeedIndex by remember { mutableIntStateOf(0) }
+    var temperatureIndex by remember { mutableIntStateOf(1) }
+    var timeIndex by remember { mutableIntStateOf(1) }
+    var windSpeedIndex by remember { mutableIntStateOf(1) }
+    var heightIndex by remember { mutableIntStateOf(1) }
+    var distanceIndex by remember { mutableIntStateOf(0) }
+
+    val defaultSegmentedControlProperties = SegmentedControlPropertiesDefault.values().copy(
+        offset = 10.dp,
+        containerPadding = 3.dp,
+        indicatorHorizontalPadding = 10.dp,
+        containerBackgroundColor = Color.Gray.copy(alpha = 0.3f),
+        indicatorShadowColor = Color.Transparent,
+        indicatorColor = Selected,
+        containerCornerRadius = 6.dp,
+        indicatorRadius = 6.dp,
+        labelFontSize = 16.sp,
+        labelFontWeight = FontWeight.W300,
+    )
 
     Text(
         text = "ТИП КАРТЫ",
@@ -353,4 +382,178 @@ fun SettingsBottomSheet(viewModel: MapScreenViewModel) {
             ),
         )
     }
+    HorizontalDivider(
+        modifier = Modifier
+            .padding(horizontal = 10.dp)
+            .padding(bottom = 20.dp),
+        thickness = 2.dp
+    )
+    Text(
+        text = "ФОРМАТ ВРЕМЕНИ",
+        style = TextStyle(
+            color = Color.Black,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.W300,
+            fontStyle = FontStyle.Normal,
+            textAlign = TextAlign.Center,
+        ),
+    )
+    SegmentedControl(
+        selectedIndex = timeIndex,
+        itemWidthMode = ItemWidthMode.Equal,
+        segmentedControlProperties = defaultSegmentedControlProperties,
+        onItemSelected = { timeIndex = it },
+        items = listOf(
+            SegmentedControlItem("12-часовой"),
+            SegmentedControlItem("24-часовой")
+        )
+    )
+    HorizontalDivider(
+        modifier = Modifier.padding(horizontal = 10.dp, vertical = 20.dp),
+        thickness = 2.dp
+    )
+    Text(
+        text = "ТЕМПЕРАТУРА",
+        style = TextStyle(
+            color = Color.Black,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.W300,
+            fontStyle = FontStyle.Normal,
+            textAlign = TextAlign.Center,
+        ),
+    )
+    SegmentedControl(
+        selectedIndex = temperatureIndex,
+        itemWidthMode = ItemWidthMode.Equal,
+        segmentedControlProperties = defaultSegmentedControlProperties,
+        onItemSelected = { temperatureIndex = it },
+        items = listOf(
+            SegmentedControlItem("Цельсий"),
+            SegmentedControlItem("Фаренгейт")
+        )
+    )
+    HorizontalDivider(
+        modifier = Modifier.padding(horizontal = 10.dp, vertical = 20.dp),
+        thickness = 2.dp
+    )
+    Text(
+        text = "СКОРОСТЬ ВОЗД. СУДНА",
+        style = TextStyle(
+            color = Color.Black,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.W300,
+            fontStyle = FontStyle.Normal,
+            textAlign = TextAlign.Center,
+        ),
+    )
+    SegmentedControl(
+        selectedIndex = planeSpeedIndex,
+        itemWidthMode = ItemWidthMode.Equal,
+        segmentedControlProperties = defaultSegmentedControlProperties,
+        onItemSelected = { planeSpeedIndex = it },
+        items = listOf(
+            SegmentedControlItem("Узлы"),
+            SegmentedControlItem("Км/ч"),
+            SegmentedControlItem("Миля/ч")
+        )
+    )
+    HorizontalDivider(
+        modifier = Modifier.padding(horizontal = 10.dp, vertical = 20.dp),
+        thickness = 2.dp
+    )
+    Text(
+        text = "ВЕРТИКАЛЬНАЯ СКОРОСТЬ",
+        style = TextStyle(
+            color = Color.Black,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.W300,
+            fontStyle = FontStyle.Normal,
+            textAlign = TextAlign.Center,
+        ),
+    )
+    SegmentedControl(
+        selectedIndex = verticalSpeedIndex,
+        itemWidthMode = ItemWidthMode.Equal,
+        segmentedControlProperties = defaultSegmentedControlProperties,
+        onItemSelected = { verticalSpeedIndex = it },
+        items = listOf(
+            SegmentedControlItem("Фут/мин"),
+            SegmentedControlItem("М/с")
+        )
+    )
+    HorizontalDivider(
+        modifier = Modifier.padding(horizontal = 10.dp, vertical = 20.dp),
+        thickness = 2.dp
+    )
+    Text(
+        text = "СКОРОСТЬ ВЕТРА",
+        style = TextStyle(
+            color = Color.Black,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.W300,
+            fontStyle = FontStyle.Normal,
+            textAlign = TextAlign.Center,
+        ),
+    )
+    SegmentedControl(
+        selectedIndex = windSpeedIndex,
+        itemWidthMode = ItemWidthMode.Equal,
+        segmentedControlProperties = defaultSegmentedControlProperties,
+        onItemSelected = { windSpeedIndex = it },
+        items = listOf(
+            SegmentedControlItem("Узлы"),
+            SegmentedControlItem("Км/ч"),
+            SegmentedControlItem("Миля/ч"),
+            SegmentedControlItem("М/с")
+        )
+    )
+    HorizontalDivider(
+        modifier = Modifier.padding(horizontal = 10.dp, vertical = 20.dp),
+        thickness = 2.dp
+    )
+    Text(
+        text = "БАРОМЕТРИЧЕСКАЯ ВЫСОТА",
+        style = TextStyle(
+            color = Color.Black,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.W300,
+            fontStyle = FontStyle.Normal,
+            textAlign = TextAlign.Center,
+        ),
+    )
+    SegmentedControl(
+        selectedIndex = heightIndex,
+        itemWidthMode = ItemWidthMode.Equal,
+        segmentedControlProperties = defaultSegmentedControlProperties,
+        onItemSelected = { heightIndex = it },
+        items = listOf(
+            SegmentedControlItem("Футы"),
+            SegmentedControlItem("Метры")
+        )
+    )
+    HorizontalDivider(
+        modifier = Modifier.padding(horizontal = 10.dp, vertical = 20.dp),
+        thickness = 2.dp
+    )
+    Text(
+        text = "РАССТОЯНИЕ",
+        style = TextStyle(
+            color = Color.Black,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.W300,
+            fontStyle = FontStyle.Normal,
+            textAlign = TextAlign.Center,
+        ),
+    )
+    SegmentedControl(
+        selectedIndex = distanceIndex,
+        itemWidthMode = ItemWidthMode.Equal,
+        segmentedControlProperties = defaultSegmentedControlProperties ,
+        onItemSelected = { distanceIndex = it },
+        items = listOf(
+            SegmentedControlItem("Километры"),
+            SegmentedControlItem("Мили"),
+            SegmentedControlItem("Морские")
+        )
+    )
 }
