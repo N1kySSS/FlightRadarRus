@@ -54,9 +54,7 @@ fun SettingsBottomSheet(viewModel: MapScreenViewModel) {
     /* TODO _ move to viewModel */
     var verticalSpeedIndex by remember { mutableIntStateOf(1) }
     var planeSpeedIndex by remember { mutableIntStateOf(0) }
-    var temperatureIndex by remember { mutableIntStateOf(1) }
     var timeIndex by remember { mutableIntStateOf(1) }
-    var windSpeedIndex by remember { mutableIntStateOf(1) }
     var heightIndex by remember { mutableIntStateOf(1) }
     var distanceIndex by remember { mutableIntStateOf(0) }
 
@@ -413,30 +411,6 @@ fun SettingsBottomSheet(viewModel: MapScreenViewModel) {
         thickness = 2.dp
     )
     Text(
-        text = "ТЕМПЕРАТУРА",
-        style = TextStyle(
-            color = Color.Black,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.W300,
-            fontStyle = FontStyle.Normal,
-            textAlign = TextAlign.Center,
-        ),
-    )
-    SegmentedControl(
-        selectedIndex = temperatureIndex,
-        itemWidthMode = ItemWidthMode.Equal,
-        segmentedControlProperties = defaultSegmentedControlProperties,
-        onItemSelected = { temperatureIndex = it },
-        items = listOf(
-            SegmentedControlItem("Цельсий"),
-            SegmentedControlItem("Фаренгейт")
-        )
-    )
-    HorizontalDivider(
-        modifier = Modifier.padding(horizontal = 10.dp, vertical = 20.dp),
-        thickness = 2.dp
-    )
-    Text(
         text = "СКОРОСТЬ ВОЗД. СУДНА",
         style = TextStyle(
             color = Color.Black,
@@ -478,32 +452,6 @@ fun SettingsBottomSheet(viewModel: MapScreenViewModel) {
         onItemSelected = { verticalSpeedIndex = it },
         items = listOf(
             SegmentedControlItem("Фут/мин"),
-            SegmentedControlItem("М/с")
-        )
-    )
-    HorizontalDivider(
-        modifier = Modifier.padding(horizontal = 10.dp, vertical = 20.dp),
-        thickness = 2.dp
-    )
-    Text(
-        text = "СКОРОСТЬ ВЕТРА",
-        style = TextStyle(
-            color = Color.Black,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.W300,
-            fontStyle = FontStyle.Normal,
-            textAlign = TextAlign.Center,
-        ),
-    )
-    SegmentedControl(
-        selectedIndex = windSpeedIndex,
-        itemWidthMode = ItemWidthMode.Equal,
-        segmentedControlProperties = defaultSegmentedControlProperties,
-        onItemSelected = { windSpeedIndex = it },
-        items = listOf(
-            SegmentedControlItem("Узлы"),
-            SegmentedControlItem("Км/ч"),
-            SegmentedControlItem("Миля/ч"),
             SegmentedControlItem("М/с")
         )
     )

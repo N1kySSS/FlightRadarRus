@@ -17,6 +17,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,6 +36,10 @@ import com.ortin.flightradar.R
 import com.ortin.flightradar.presentation.util.clickableWithoutIndication
 import com.ortin.flightradar.presentation.viewmodel.MapScreenViewModel
 import com.ortin.flightradar.ui.theme.Selected
+import me.austinng.austinsegmentedcontrol.ItemWidthMode
+import me.austinng.austinsegmentedcontrol.SegmentedControl
+import me.austinng.austinsegmentedcontrol.SegmentedControlItem
+import me.austinng.austinsegmentedcontrol.SegmentedControlPropertiesDefault
 
 @Composable
 fun WeatherBottomSheet(viewModel: MapScreenViewModel) {
@@ -40,6 +47,23 @@ fun WeatherBottomSheet(viewModel: MapScreenViewModel) {
     val isCurrentWeatherDisplay by viewModel.isCurrentWeatherDisplay
     val isTotalPrecipitationDisplay by viewModel.isTotalPrecipitationDisplay
     val isPrecipitationIntensityDisplay by viewModel.isPrecipitationIntensityDisplay
+
+    /* TODO _ move to viewModel */
+    var temperatureIndex by remember { mutableIntStateOf(1) }
+    var windSpeedIndex by remember { mutableIntStateOf(1) }
+
+    val defaultSegmentedControlProperties = SegmentedControlPropertiesDefault.values().copy(
+        offset = 10.dp,
+        containerPadding = 3.dp,
+        indicatorHorizontalPadding = 10.dp,
+        containerBackgroundColor = Color.Gray.copy(alpha = 0.3f),
+        indicatorShadowColor = Color.Transparent,
+        indicatorColor = Selected,
+        containerCornerRadius = 6.dp,
+        indicatorRadius = 6.dp,
+        labelFontSize = 16.sp,
+        labelFontWeight = FontWeight.W300,
+    )
 
     Text(
         modifier = Modifier.padding(top = 20.dp),
@@ -373,4 +397,54 @@ fun WeatherBottomSheet(viewModel: MapScreenViewModel) {
             ),
         )
     }
+    HorizontalDivider(
+        modifier = Modifier.padding(horizontal = 10.dp, vertical = 20.dp),
+        thickness = 2.dp
+    )
+    Text(
+        text = "ТЕМПЕРАТУРА",
+        style = TextStyle(
+            color = Color.Black,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.W300,
+            fontStyle = FontStyle.Normal,
+            textAlign = TextAlign.Center,
+        ),
+    )
+    SegmentedControl(
+        selectedIndex = temperatureIndex,
+        itemWidthMode = ItemWidthMode.Equal,
+        segmentedControlProperties = defaultSegmentedControlProperties,
+        onItemSelected = { temperatureIndex = it },
+        items = listOf(
+            SegmentedControlItem("Цельсий"),
+            SegmentedControlItem("Фаренгейт")
+        )
+    )
+    HorizontalDivider(
+        modifier = Modifier.padding(horizontal = 10.dp, vertical = 20.dp),
+        thickness = 2.dp
+    )
+    Text(
+        text = "СКОРОСТЬ ВЕТРА",
+        style = TextStyle(
+            color = Color.Black,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.W300,
+            fontStyle = FontStyle.Normal,
+            textAlign = TextAlign.Center,
+        ),
+    )
+    SegmentedControl(
+        selectedIndex = windSpeedIndex,
+        itemWidthMode = ItemWidthMode.Equal,
+        segmentedControlProperties = defaultSegmentedControlProperties,
+        onItemSelected = { windSpeedIndex = it },
+        items = listOf(
+            SegmentedControlItem("Узлы"),
+            SegmentedControlItem("Км/ч"),
+            SegmentedControlItem("Миля/ч"),
+            SegmentedControlItem("М/с")
+        )
+    )
 }
