@@ -52,9 +52,11 @@ import com.ortin.flightradar.ui.theme.OnBackground
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
+import com.yandex.mapkit.map.IconStyle
 import com.yandex.mapkit.map.InputListener
 import com.yandex.mapkit.map.Map
 import com.yandex.mapkit.map.MapType
+import com.yandex.mapkit.map.TextStyle
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.image.ImageProvider
 import org.koin.androidx.compose.koinViewModel
@@ -81,6 +83,7 @@ fun MapScreen(
     val isAirportsVisible by viewModel.isAirportsVisible
     val isMyLocationVisible by viewModel.isMyLocationVisible
     val activeMapType by viewModel.activeMapType
+    val markType by viewModel.selectedMarkType
 
     val activeSheet = viewModel.activeSheet.value
 
@@ -153,6 +156,47 @@ fun MapScreen(
             override fun onMapLongTap(p0: Map, p1: Point) {
                 /* do nothing */
             }
+        }
+    }
+
+    val plainPinsCollection = remember(mapView) {
+        mapView.mapWindow.map.mapObjects.addCollection()
+    }
+
+    /**
+     * Это замоканные данные об аэропортах Москвы,
+     * в дальнейшем, они будут получены с бэкенда
+     **/
+    LaunchedEffect(markType) {
+        plainPinsCollection.clear()
+
+        val marker = plainPinsCollection.addPlacemark().apply {
+            geometry = Point(55.8022, 37.6726)
+
+            when (markType) {
+                "Выкл." -> {
+                    setIcon(ImageProvider.fromResource(context, R.drawable.plane_default))
+                }
+
+                "Логотип" -> {
+                    setIcon(ImageProvider.fromResource(context, R.drawable.plane_default))
+                }
+
+                "Текст" -> {
+                    setIcon(ImageProvider.fromResource(context, R.drawable.plane_default))
+                    setText(
+                        "SU 1492",
+                        TextStyle().apply {
+                            placement = TextStyle.Placement.RIGHT
+                            size = 12f
+                        }
+                    )
+                }
+            }
+
+            setIconStyle(IconStyle().apply {
+                scale = 2f
+            })
         }
     }
 
