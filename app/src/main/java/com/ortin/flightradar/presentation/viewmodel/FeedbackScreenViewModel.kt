@@ -18,7 +18,9 @@ class FeedbackScreenViewModel(private val gmailSender: GmailSender) : ViewModel(
     }
 
     fun sendMail() = viewModelScope.launch(Dispatchers.IO) {
-        gmailSender.sendMail(body.value)
+        if (body.value != "") {
+            gmailSender.sendMail(body.value)
+        }
         _body.value = ""
     }
 }

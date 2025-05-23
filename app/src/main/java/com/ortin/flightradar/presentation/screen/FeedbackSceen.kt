@@ -16,8 +16,12 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import com.ortin.flightradar.presentation.component.header.CustomHeader
 import com.ortin.flightradar.presentation.viewmodel.FeedbackScreenViewModel
 import com.ortin.flightradar.ui.theme.Additional
+import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -45,6 +50,15 @@ fun FeedbackScreen(
 
     val viewModel: FeedbackScreenViewModel = koinViewModel()
     val mailBody by viewModel.body.collectAsState()
+
+    var isButtonEnable by remember { mutableStateOf(true) }
+
+    LaunchedEffect(key1 = isButtonEnable) {
+        if (!isButtonEnable) {
+            delay(5000)
+            isButtonEnable = true
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -131,13 +145,15 @@ fun FeedbackScreen(
                 .padding(horizontal = 10.dp, vertical = 12.dp)
                 .fillMaxWidth(),
             onClick = {
+                isButtonEnable = false
                 viewModel.sendMail()
                 Toast
-                    .makeText(context, "Сообщение успешно отправлено", Toast.LENGTH_SHORT)
+                    .makeText(context, "Сообщение успешно отправлено", Toast.LENGTH_LONG)
                     .show()
             },
             shape = RoundedCornerShape(10.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Additional)
+            colors = ButtonDefaults.buttonColors(containerColor = if (isButtonEnable) Additional else Color.Gray),
+            enabled = isButtonEnable
         ) {
             Text(
                 text = "Подтвердить",
