@@ -1,6 +1,5 @@
 package com.ortin.flightradar.presentation.screen
 
-import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -46,6 +45,7 @@ import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButtonIte
 import com.ortin.flightradar.presentation.component.flyoutbutton.FlyoutButtonStack
 import com.ortin.flightradar.presentation.component.mylocationbutton.MyLocationButton
 import com.ortin.flightradar.presentation.util.clickableWithoutIndication
+import com.ortin.flightradar.presentation.util.vectorDrawableToBitmap
 import com.ortin.flightradar.presentation.viewmodel.MapScreenState
 import com.ortin.flightradar.presentation.viewmodel.MapScreenViewModel
 import com.ortin.flightradar.ui.theme.OnBackground
@@ -55,7 +55,6 @@ import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.IconStyle
 import com.yandex.mapkit.map.InputListener
 import com.yandex.mapkit.map.Map
-import com.yandex.mapkit.map.MapType
 import com.yandex.mapkit.map.TextStyle
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.image.ImageProvider
@@ -175,20 +174,22 @@ fun MapScreen(
 
             when (markType) {
                 "Выкл." -> {
-                    setIcon(ImageProvider.fromResource(context, R.drawable.plane_default))
+                    setIcon(ImageProvider.fromBitmap(vectorDrawableToBitmap(context, R.drawable.plane_default_svg)))
                 }
 
                 "Логотип" -> {
-                    setIcon(ImageProvider.fromResource(context, R.drawable.plane_default))
+                    setIcon(ImageProvider.fromBitmap(vectorDrawableToBitmap(context, R.drawable.plane_logo_svg)))
                 }
 
                 "Текст" -> {
-                    setIcon(ImageProvider.fromResource(context, R.drawable.plane_default))
+                    setIcon(ImageProvider.fromBitmap(vectorDrawableToBitmap(context, R.drawable.plane_default_svg)))
                     setText(
                         "SU 1492",
                         TextStyle().apply {
                             placement = TextStyle.Placement.RIGHT
-                            size = 12f
+                            size = 10f
+                            offsetFromIcon = true
+                            offset = 4f
                         }
                     )
                 }
